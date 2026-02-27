@@ -77,16 +77,66 @@
   <button class="nav-btn" onclick="showPage('activeCars')" id="btn-activeCars">
     <i class="bi bi-car-front"></i><span>چالاک</span>
   </button>
+  <button class="nav-btn" onclick="showPage('customers')" id="btn-customers">
+    <i class="bi bi-people"></i><span>کریار</span>
+  </button>
   <button class="nav-btn admin-only" onclick="showPage('history')" id="btn-history">
     <i class="bi bi-clock-history"></i><span>مێژوو</span>
   </button>
-  <button class="nav-btn admin-only" onclick="showPage('monthlyBilling')" id="btn-monthlyBilling">
-    <i class="bi bi-receipt"></i><span>مانگانە</span>
-  </button>
-  <button class="nav-btn admin-only" onclick="showPage('reports')" id="btn-reports">
-    <i class="bi bi-bar-chart"></i><span>ڕاپۆرت</span>
+  <button class="nav-btn admin-only" onclick="toggleMoreMenu()" id="btn-more">
+    <i class="bi bi-grid"></i><span>زیاتر</span>
   </button>
 </nav>
+
+<!-- More Menu (Mobile) -->
+<div id="moreMenu" style="display:none;position:fixed;bottom:70px;left:0;right:0;z-index:1050;padding:8px 12px">
+  <div class="rounded-4 shadow-lg overflow-hidden" style="background:#1e293b;border:1px solid rgba(255,255,255,0.1)">
+    <div class="d-flex align-items-center justify-content-between px-3 py-2" style="border-bottom:1px solid rgba(255,255,255,0.1)">
+      <span class="text-white fw-bold small">مەنوو</span>
+      <button class="btn btn-sm btn-link text-white p-0" onclick="toggleMoreMenu()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="row g-0">
+      <div class="col-4">
+        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('monthlyBilling')">
+          <i class="bi bi-receipt fs-4" style="color:#38bdf8"></i>
+          <span class="small" style="color:#cbd5e1">مانگانە</span>
+        </button>
+      </div>
+      <div class="col-4" style="border-right:1px solid rgba(255,255,255,0.08);border-left:1px solid rgba(255,255,255,0.08)">
+        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('reports')">
+          <i class="bi bi-bar-chart fs-4" style="color:#a78bfa"></i>
+          <span class="small" style="color:#cbd5e1">ڕاپۆرت</span>
+        </button>
+      </div>
+      <div class="col-4">
+        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('expenses')">
+          <i class="bi bi-wallet2 fs-4" style="color:#fb923c"></i>
+          <span class="small" style="color:#cbd5e1">خەرجی</span>
+        </button>
+      </div>
+      <div class="col-4" style="border-top:1px solid rgba(255,255,255,0.08)">
+        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('users')">
+          <i class="bi bi-people-fill fs-4" style="color:#34d399"></i>
+          <span class="small" style="color:#cbd5e1">بەکارهێنەر</span>
+        </button>
+      </div>
+      <div class="col-4" style="border-top:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08);border-left:1px solid rgba(255,255,255,0.08)">
+        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();openModal('backupModal')">
+          <i class="bi bi-cloud-arrow-down fs-4" style="color:#60a5fa"></i>
+          <span class="small" style="color:#cbd5e1">بەکئەپ</span>
+        </button>
+      </div>
+      <div class="col-4" style="border-top:1px solid rgba(255,255,255,0.08)">
+        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();openModal('resetModal')">
+          <i class="bi bi-arrow-counterclockwise fs-4" style="color:#f87171"></i>
+          <span class="small" style="color:#cbd5e1">ڕیسیت</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- More menu backdrop -->
+<div id="moreMenuBackdrop" onclick="closeMoreMenu()" style="display:none;position:fixed;inset:0;z-index:1040;background:rgba(0,0,0,0.4)"></div>
 
 <!-- Desktop Sidebar -->
 <div class="d-flex">

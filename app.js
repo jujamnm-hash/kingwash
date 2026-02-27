@@ -1977,6 +1977,27 @@ function updateResetCounts() {
   });
 }
 
+// -------- More Menu (mobile) --------
+function toggleMoreMenu() {
+  const menu     = document.getElementById('moreMenu');
+  const backdrop = document.getElementById('moreMenuBackdrop');
+  if (!menu) return;
+  const visible = menu.style.display !== 'none';
+  menu.style.display      = visible ? 'none' : 'block';
+  backdrop.style.display  = visible ? 'none' : 'block';
+  const btn = document.getElementById('btn-more');
+  if (btn) btn.classList.toggle('active', !visible);
+}
+
+function closeMoreMenu() {
+  const menu     = document.getElementById('moreMenu');
+  const backdrop = document.getElementById('moreMenuBackdrop');
+  if (menu)     menu.style.display     = 'none';
+  if (backdrop) backdrop.style.display = 'none';
+  const btn = document.getElementById('btn-more');
+  if (btn) btn.classList.remove('active');
+}
+
 // -------- Backup / Restore --------
 function exportData() {
   const backup = {
