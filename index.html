@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KING WASH</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0d6efd 0%,#0a4bb5 100%)">
+  <div class="d-flex align-items-center justify-content-center h-100">
+    <div class="card shadow-lg border-0" style="width:100%;max-width:380px;border-radius:16px;overflow:hidden">
+      <div class="bg-dark text-white text-center py-4 px-3">
+        <i class="bi bi-car-front-fill" style="font-size:3rem;color:#0d6efd"></i>
+        <div class="fs-3 fw-bold mt-2">KING WASH</div>
+        <div class="text-secondary small">سیستەمی بەرێوەبردن</div>
+      </div>
+      <div class="card-body p-4">
+        <div id="loginError" class="alert alert-danger d-none py-2 small"></div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">ناوی بەکارهێنەر</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control" id="loginUsername" placeholder="username" autocomplete="username" />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">وشەی نهێنی</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" class="form-control" id="loginPassword" placeholder="password"
+              autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg w-100" onclick="doLogin()">
+          <i class="bi bi-box-arrow-in-right me-2"></i>چوونەژوورەوە
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-primary sticky-top shadow">
+  <div class="container-fluid">
+    <span class="navbar-brand fw-bold fs-5"><i class="bi bi-car-front-fill me-2"></i>KING WASH</span>
+    <div class="d-flex gap-2 align-items-center">
+      <span class="badge bg-light text-dark" id="currentTime"></span>
+      <span class="badge bg-warning text-dark d-none" id="navUserBadge"><i class="bi bi-person-fill me-1"></i><span id="navUsername"></span></span>
+      <button class="btn btn-outline-light btn-sm admin-only" onclick="openModal('expenseModal')">
+        <i class="bi bi-plus-circle"></i> <span class="d-none d-md-inline">خەرجی</span>
+      </button>
+      <button class="btn btn-outline-light btn-sm" onclick="doLogout()" title="دەرچوون">
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Bottom Navigation (Mobile) -->
+<nav class="bottom-nav d-md-none">
+  <button class="nav-btn active admin-only" onclick="showPage('dashboard')" id="btn-dashboard">
+    <i class="bi bi-speedometer2"></i><span>داشبۆرد</span>
+  </button>
+  <button class="nav-btn" onclick="showPage('newCar')" id="btn-newCar">
+    <i class="bi bi-plus-circle"></i><span>تۆمار</span>
+  </button>
+  <button class="nav-btn" onclick="showPage('activeCars')" id="btn-activeCars">
+    <i class="bi bi-car-front"></i><span>چالاک</span>
+  </button>
+  <button class="nav-btn admin-only" onclick="showPage('history')" id="btn-history">
+    <i class="bi bi-clock-history"></i><span>مێژوو</span>
+  </button>
+  <button class="nav-btn admin-only" onclick="showPage('monthlyBilling')" id="btn-monthlyBilling">
+    <i class="bi bi-receipt"></i><span>مانگانە</span>
+  </button>
+  <button class="nav-btn admin-only" onclick="showPage('reports')" id="btn-reports">
+    <i class="bi bi-bar-chart"></i><span>ڕاپۆرت</span>
+  </button>
+</nav>
+
+<!-- Desktop Sidebar -->
+<div class="d-flex">
+  <div class="sidebar d-none d-md-flex flex-column p-3 bg-dark">
+    <div class="sidebar-logo text-center mb-4">
+      <i class="bi bi-car-front-fill text-primary" style="font-size:2.5rem"></i>
+      <div class="text-white fw-bold mt-1">KING WASH</div>
+    </div>
+    <button class="sidebar-btn active admin-only" onclick="showPage('dashboard')" id="sidebar-btn-dashboard">
+      <i class="bi bi-speedometer2"></i> داشبۆرد
+    </button>
+    <button class="sidebar-btn" onclick="showPage('newCar')" id="sidebar-btn-newCar">
+      <i class="bi bi-plus-circle"></i> تۆماری سەیارە
+    </button>
+    <button class="sidebar-btn" onclick="showPage('activeCars')" id="sidebar-btn-activeCars">
+      <i class="bi bi-car-front"></i> سەیارەی چالاک
+    </button>
+    <button class="sidebar-btn" onclick="showPage('customers')" id="sidebar-btn-customers">
+      <i class="bi bi-people-fill"></i> کریاران
+    </button>
+    <button class="sidebar-btn admin-only" onclick="showPage('monthlyBilling')" id="sidebar-btn-monthlyBilling">
+      <i class="bi bi-receipt"></i> وەسلی مانگانە
+    </button>
+    <button class="sidebar-btn admin-only" onclick="showPage('history')" id="sidebar-btn-history">
+      <i class="bi bi-clock-history"></i> مێژووی شوشتن
+    </button>
+    <button class="sidebar-btn admin-only" onclick="showPage('expenses')" id="sidebar-btn-expenses">
+      <i class="bi bi-wallet2"></i> خەرجیەکان
+    </button>
+    <button class="sidebar-btn admin-only" onclick="showPage('reports')" id="sidebar-btn-reports">
+      <i class="bi bi-bar-chart-fill"></i> ڕاپۆرت
+    </button>
+    <button class="sidebar-btn admin-only" onclick="showPage('users')" id="sidebar-btn-users">
+      <i class="bi bi-people-fill"></i> بەکارهێنەران
+    </button>
+    <div class="mt-auto pt-3" style="border-top:1px solid rgba(255,255,255,0.1)">
+      <button class="sidebar-btn admin-only" onclick="openModal('backupModal')" style="color:#90caf9 !important">
+        <i class="bi bi-cloud-arrow-down"></i> بەکئەپ / گەڕاندنەوە
+      </button>
+      <button class="sidebar-btn admin-only" onclick="openModal('resetModal')" style="color:#ff6b6b !important">
+        <i class="bi bi-arrow-counterclockwise"></i> ڕیسیتکردنەوە
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content flex-grow-1">
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>داشبۆرد — KING WASH</h4>
+        <small class="text-muted" id="todayDate"></small>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-primary text-white">
+            <div class="stat-icon"><i class="bi bi-car-front-fill"></i></div>
+            <div class="stat-value" id="stat-today-cars">0</div>
+            <div class="stat-label">سەیارەی ئەمرۆ</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-success text-white">
+            <div class="stat-icon"><i class="bi bi-cash-coin"></i></div>
+            <div class="stat-value" id="stat-today-income">0</div>
+            <div class="stat-label">داهاتی ئەمرۆ <small class="d-block opacity-75 fs-6" id="stat-monthly-washes-today"></small></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-warning text-white">
+            <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div class="stat-value" id="stat-active-cars">0</div>
+            <div class="stat-label">سەیارەی چالاک</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-danger text-white">
+            <div class="stat-icon"><i class="bi bi-arrow-down-circle"></i></div>
+            <div class="stat-value" id="stat-today-expenses">0</div>
+            <div class="stat-label">خەرجی ئەمرۆ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Net Profit -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <div>
+                <div class="text-muted small">قازانجی خاڵص ئەمرۆ</div>
+                <div class="fs-4 fw-bold text-success" id="stat-net-profit">0 د.ع</div>
+              </div>
+              <i class="bi bi-graph-up-arrow text-success" style="font-size:2.5rem"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <div>
+                <div class="text-muted small">کریارانی مانگانە (چالاک)</div>
+                <div class="fs-4 fw-bold text-primary" id="stat-monthly-customers">0</div>
+              </div>
+              <i class="bi bi-people-fill text-primary" style="font-size:2.5rem"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Cars Table -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-warning text-dark fw-bold">
+          <i class="bi bi-car-front me-2"></i>سەیارەی ئێستا لە ناو غسل
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0" id="activeCarsDashTable">
+              <thead class="table-light">
+                <tr>
+                  <th>سەیارە</th>
+                  <th>پلاکە</th>
+                  <th>جۆر</th>
+                  <th>کات</th>
+                  <th>کردار</th>
+                </tr>
+              </thead>
+              <tbody id="activeCarsDashBody">
+                <tr><td colspan="5" class="text-center text-muted py-3">هیچ سەیارەیەک نییە</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NEW CAR PAGE ===== -->
+    <div id="page-newCar" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-plus-circle me-2 text-primary"></i>تۆماری سەیارەی نوێ</h4>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <form id="carForm" onsubmit="submitCar(event)">
+            <!-- Car Size Category (Dynamic Buttons) -->
+            <div class="mb-4">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <label class="form-label fw-bold mb-0">جۆری سەیارە</label>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="openModal('addCategoryModal')">
+                  <i class="bi bi-plus-circle"></i> کەتەگۆری نوێ
+                </button>
+              </div>
+              <div class="row g-2" id="carSizeBtnsContainer">
+                <!-- rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Customer Type -->
+            <div class="mb-4">
+              <label class="form-label fw-bold">جۆری کریار</label>
+              <div class="row g-3">
+                <div class="col-6">
+                  <input type="radio" class="btn-check" name="customerType" id="typeCash" value="cash" required />
+                  <label class="btn btn-outline-warning w-100 py-3" for="typeCash">
+                    <i class="bi bi-cash-coin d-block fs-3 mb-1"></i>
+                    <strong>نقد</strong>
+                  </label>
+                </div>
+                <div class="col-6">
+                  <input type="radio" class="btn-check" name="customerType" id="typeMonthly" value="monthly" required />
+                  <label class="btn btn-outline-info w-100 py-3" for="typeMonthly">
+                    <i class="bi bi-calendar-check d-block fs-3 mb-1"></i>
+                    <strong>عقدی مانگانە</strong>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Monthly Customer Select (shown only when monthly is selected) -->
+            <div class="mb-3" id="monthlyCustomerDiv" style="display:none">
+              <label class="form-label">کریارەکە هەڵبژێره</label>
+              <select class="form-select" id="monthlyCustomerSelect">
+                <option value="">-- کریار هەڵبژێره --</option>
+              </select>
+              <div class="form-text">یان کریاری نوێ زیاد بکە لە بەشی کریاران</div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-md-4">
+                <label class="form-label">ناوی سەیارە*</label>
+                <input type="text" class="form-control" id="carName" placeholder="وێنە: تۆیۆتا" required />
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label">رەنگی سەیارە*</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="carColor" placeholder="رەنگ" required />
+                  <input type="color" class="form-control form-control-color" id="carColorPicker" value="#ffffff" title="رەنگ هەڵبژێره" />
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label">رەقەمی سەیارە (پلاکە)*</label>
+                <input type="text" class="form-control" id="carPlate" placeholder="وێنە: ب ١٢٣٤٥" required
+                  oninput="autoFillCarByPlate()" autocomplete="off" />
+                <div id="plateSuggestions" class="list-group position-absolute shadow" style="z-index:999;display:none;min-width:220px"></div>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label">کاتی هاتن بۆ غسل</label>
+                <input type="datetime-local" class="form-control" id="entryTime" required />
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">تێبینی (ئارەزوومەند)</label>
+                <input type="text" class="form-control" id="carNote" placeholder="هەر تێبینێک..." />
+              </div>
+            </div>
+
+            <!-- Price Preview -->
+            <div class="alert alert-info d-flex align-items-center mb-3" id="pricePreview" style="display:none!important">
+              <i class="bi bi-info-circle me-2"></i>
+              <span id="pricePreviewLabel">نرخ:</span> <strong class="ms-1" id="pricePreviewValue">---</strong> <span class="ms-1">د.ع</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100">
+              <i class="bi bi-check-circle me-2"></i>تۆمار بکە و بچێتە ناو غسل
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ACTIVE CARS PAGE ===== -->
+    <div id="page-activeCars" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-car-front me-2 text-warning"></i>سەیارەی چالاک</h4>
+        <span class="badge bg-warning text-dark fs-6" id="activeCountBadge">0</span>
+      </div>
+      <div id="activeCarsGrid" class="row g-3">
+        <div class="col-12 text-center text-muted py-5">
+          <i class="bi bi-car-front" style="font-size:3rem"></i>
+          <p class="mt-2">هیچ سەیارەیەک لە ناو غسل نییە</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CUSTOMERS PAGE ===== -->
+    <div id="page-customers" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>کریاران</h4>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addCustomerModal')">
+          <i class="bi bi-person-plus"></i> زیادکردن
+        </button>
+      </div>
+
+      <!-- Customer Type Tabs -->
+      <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+          <button class="nav-link active" onclick="filterCustomers('all')" id="tab-all">هەموو</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="filterCustomers('monthly')" id="tab-monthly">
+            <i class="bi bi-calendar-check me-1"></i>مانگانە
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="filterCustomers('cash')" id="tab-cash">
+            <i class="bi bi-cash me-1"></i>نقد
+          </button>
+        </li>
+      </ul>
+
+      <div id="customersGrid" class="row g-3">
+        <div class="col-12 text-center text-muted py-5">
+          <i class="bi bi-person-x" style="font-size:3rem"></i>
+          <p class="mt-2">هیچ کریارێک تۆمار نەکراوە</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== HISTORY PAGE ===== -->
+    <div id="page-history" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>مێژووی شوشتن</h4>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-success btn-sm" onclick="exportHistoryCSV()" title="هەناردەکردن بە CSV">
+            <i class="bi bi-download"></i><span class="d-none d-md-inline ms-1">CSV</span>
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" onclick="printHistory()" title="چاپکردن">
+            <i class="bi bi-printer"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Strip -->
+      <div class="row g-2 mb-3">
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm text-center p-2">
+            <div class="text-muted small">کۆی شوشتن</div>
+            <div class="fs-5 fw-bold text-primary" id="hist-stat-count">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm text-center p-2">
+            <div class="text-muted small">داهاتی نقد</div>
+            <div class="fs-5 fw-bold text-success" id="hist-stat-cash">0 د.ع</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm text-center p-2">
+            <div class="text-muted small">شوشتنی مانگانە</div>
+            <div class="fs-5 fw-bold text-info" id="hist-stat-monthly">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm text-center p-2">
+            <div class="text-muted small">ماوەی ناوەنجی</div>
+            <div class="fs-5 fw-bold text-warning" id="hist-stat-avgtime">---</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-6 col-md-2">
+              <label class="form-label small">لە بەرواری</label>
+              <input type="date" class="form-control form-control-sm" id="filterFrom" />
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label small">بۆ بەرواری</label>
+              <input type="date" class="form-control form-control-sm" id="filterTo" />
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label small">تۆمارکار</label>
+              <select class="form-select form-select-sm" id="filterCreatedBy">
+                <option value="all">هەموو</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label small">جۆری کریار</label>
+              <select class="form-select form-select-sm" id="filterType">
+                <option value="all">هەموو</option>
+                <option value="cash">نقد</option>
+                <option value="monthly">مانگانە</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label small">کەتەگۆری</label>
+              <select class="form-select form-select-sm" id="filterSize">
+                <option value="all">هەموو</option>
+                <option value="large">گەورە</option>
+                <option value="small">بچووک</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label small">ریزکردن</label>
+              <select class="form-select form-select-sm" id="filterSort">
+                <option value="newest">نوێترین</option>
+                <option value="oldest">کۆنترین</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-2">
+              <button class="btn btn-primary btn-sm w-100" onclick="applyHistoryFilter()">
+                <i class="bi bi-funnel"></i> فلتەر
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="input-group mb-3">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control" id="historySearch" placeholder="گەڕان بە ناو، پلاکە، رەنگ، تێبینی..." oninput="applyHistoryFilter()" />
+        <button class="btn btn-outline-secondary" onclick="document.getElementById('historySearch').value=''; applyHistoryFilter();" title="پاككردنەوە"><i class="bi bi-x"></i></button>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0" id="historyTable">
+              <thead class="table-primary">
+                <tr>
+                  <th class="text-center" style="width:40px">#</th>
+                  <th>ناوی سەیارە</th>
+                  <th>پلاکە</th>
+                  <th>کەتەگۆری</th>
+                  <th>جۆری کریار</th>
+                  <th>ناوی کریار</th>
+                  <th>کاتی هاتن</th>
+                  <th>ماوە</th>
+                  <th>نرخ</th>
+                  <th>تێبینی</th>
+                  <th>تۆمارکار</th>
+                  <th class="text-center">ئیش</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <tr><td colspan="12" class="text-center text-muted py-3">مێژوو بەتاڵه</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap gap-1">
+        <div class="text-muted small" id="historyTotal"></div>
+        <div class="text-muted small" id="historyIncomeTotal"></div>
+      </div>
+    </div>
+
+    <!-- Wash Detail Modal -->
+    <div class="modal fade" id="washDetailModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title"><i class="bi bi-car-front me-2"></i>وردەکاری شوشتن</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="washDetailBody"></div>
+          <div class="modal-footer">
+            <button class="btn btn-dark btn-sm" id="washDetailQrBtn"><i class="bi bi-qr-code"></i> QR</button>
+            <button class="btn btn-danger btn-sm" id="washDetailDeleteBtn"><i class="bi bi-trash"></i> سڕینەوە</button>
+            <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">داخستن</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EXPENSES PAGE ===== -->
+    <div id="page-expenses" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-wallet2 me-2 text-danger"></i>خەرجیەکان</h4>
+        <button class="btn btn-danger btn-sm" onclick="openModal('expenseModal')">
+          <i class="bi bi-plus"></i> خەرجی نوێ
+        </button>
+      </div>
+
+      <!-- Expense Filters -->
+      <div class="row g-2 mb-3">
+        <div class="col-6 col-md-3">
+          <input type="date" class="form-control form-control-sm" id="expFilterFrom" />
+        </div>
+        <div class="col-6 col-md-3">
+          <input type="date" class="form-control form-control-sm" id="expFilterTo" />
+        </div>
+        <div class="col-6 col-md-3">
+          <select class="form-select form-select-sm" id="expFilterCategory">
+            <option value="all">هەموو کەتەگۆریەکان</option>
+            <option value="ئامراز">ئامراز</option>
+            <option value="مووچە">مووچە</option>
+            <option value="کارەبا و ئاو">کارەبا و ئاو</option>
+            <option value="کیمیا">کیمیا</option>
+            <option value="تر">تر</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-3">
+          <button class="btn btn-secondary btn-sm w-100" onclick="applyExpenseFilter()">
+            <i class="bi bi-funnel"></i> فلتەر
+          </button>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-danger">
+                <tr>
+                  <th>#</th>
+                  <th>بابەت</th>
+                  <th>کەتەگۆری</th>
+                  <th>بڕ</th>
+                  <th>بەروار</th>
+                  <th>کردار</th>
+                </tr>
+              </thead>
+              <tbody id="expensesTableBody">
+                <tr><td colspan="6" class="text-center text-muted py-3">هیچ خەرجیەک تۆمار نەکراوە</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2 text-end fw-bold text-danger" id="expensesTotal"></div>
+    </div>
+
+    <!-- ===== MONTHLY BILLING PAGE ===== -->
+    <div id="page-monthlyBilling" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-receipt me-2 text-info"></i>وەسلی مانگانە</h4>
+      </div>
+
+      <!-- Month Selector -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col-auto">
+              <label class="form-label mb-0 fw-bold">مانگ</label>
+            </div>
+            <div class="col-auto">
+              <input type="month" class="form-control" id="billingMonth" onchange="renderMonthlyBilling()" />
+            </div>
+            <div class="col-auto d-flex gap-2">
+              <button class="btn btn-outline-secondary btn-sm" onclick="shiftBillingMonth(-1)">‹ مانگی پێش</button>
+              <button class="btn btn-outline-secondary btn-sm" onclick="shiftBillingMonth(1)">مانگی دوا ›</button>
+              <button class="btn btn-primary btn-sm" onclick="setBillingMonthToday()">ئەمرۆ مانگ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Strip -->
+      <div class="row g-3 mb-4" id="billingSummaryRow">
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-info text-white">
+            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-value" id="bill-cust-count">0</div>
+            <div class="stat-label">کریاری مانگانە</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-primary text-white">
+            <div class="stat-icon"><i class="bi bi-car-front-fill"></i></div>
+            <div class="stat-value" id="bill-wash-count">0</div>
+            <div class="stat-label">کۆی شوشتن</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-warning text-white">
+            <div class="stat-icon"><i class="bi bi-cash-coin"></i></div>
+            <div class="stat-value" id="bill-total-due">0</div>
+            <div class="stat-label">کۆی دەدرەدان</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card bg-danger text-white">
+            <div class="stat-icon"><i class="bi bi-exclamation-circle"></i></div>
+            <div class="stat-value" id="bill-outstanding">0</div>
+            <div class="stat-label">قەرزی ماوە</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Billing Cards -->
+      <div id="billingCustomersGrid" class="row g-3">
+        <div class="col-12 text-center text-muted py-5">
+          <i class="bi bi-people" style="font-size:3rem"></i>
+          <p class="mt-2">هیچ کریاری مانگانە نییە</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REPORTS PAGE ===== -->
+    <div id="page-reports" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>ڕاپۆرتی داراییەکان</h4>
+        <button class="btn btn-outline-info btn-sm" onclick="openQrScanModal()">
+          <i class="bi bi-qr-code-scan me-1"></i>سکانی QR
+        </button>
+      </div>
+
+      <!-- QR Lookup -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header fw-bold bg-dark text-white">
+          <i class="bi bi-qr-code me-2"></i>دۆزینەوەی QR بە ژمارەی سەیارە
+        </div>
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <input type="text" class="form-control" id="qrLookupPlate"
+                placeholder="ژمارەی سەیارە بنووسە..."
+                oninput="qrLookupPreview()"
+                onkeydown="if(event.key==='Enter') generateQrFromLookup()" />
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-dark" onclick="generateQrFromLookup()">
+                <i class="bi bi-qr-code me-1"></i>QR دروست بکە
+              </button>
+            </div>
+          </div>
+          <div id="qrLookupInfo" class="mt-2 small text-muted d-none"></div>
+        </div>
+      </div>
+
+      <!-- Report Period -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-6 col-md-4">
+              <label class="form-label small">لە بەرواری</label>
+              <input type="date" class="form-control" id="reportFrom" />
+            </div>
+            <div class="col-6 col-md-4">
+              <label class="form-label small">بۆ بەرواری</label>
+              <input type="date" class="form-control" id="reportTo" />
+            </div>
+            <div class="col-12 col-md-4">
+              <button class="btn btn-primary w-100" onclick="generateReport()">
+                <i class="bi bi-file-earmark-bar-graph"></i> دروست بکە
+              </button>
+            </div>
+          </div>
+          <!-- Quick Ranges -->
+          <div class="mt-2 d-flex gap-2 flex-wrap">
+            <button class="btn btn-outline-secondary btn-sm" onclick="setReportRange('today')">ئەمرۆ</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setReportRange('week')">ئەم هەفتەیە</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="setReportRange('month')">ئەم مانگە</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="reportResults" style="display:none">
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-card bg-primary text-white">
+              <div class="stat-value" id="rep-total-cars">0</div>
+              <div class="stat-label">کۆی سەیارەکان</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card bg-success text-white">
+              <div class="stat-value" id="rep-total-income">0</div>
+              <div class="stat-label">کۆی داهات</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card bg-danger text-white">
+              <div class="stat-value" id="rep-total-expenses">0</div>
+              <div class="stat-label">کۆی خەرجی</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card bg-info text-white">
+              <div class="stat-value" id="rep-net-profit">0</div>
+              <div class="stat-label">قازانجی خاڵص</div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm p-3">
+              <div class="text-muted small">سەیارەی گەورە</div>
+              <div class="fs-4 fw-bold text-primary" id="rep-large-cars">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm p-3">
+              <div class="text-muted small">سەیارەی بچووک</div>
+              <div class="fs-4 fw-bold text-success" id="rep-small-cars">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm p-3">
+              <div class="text-muted small">جۆری تر</div>
+              <div class="fs-4 fw-bold text-secondary" id="rep-other-cars">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm p-3">
+              <div class="text-muted small">کریارانی نقد</div>
+              <div class="fs-4 fw-bold text-warning" id="rep-cash-customers">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm p-3">
+              <div class="text-muted small">کریارانی مانگانە</div>
+              <div class="fs-4 fw-bold text-info" id="rep-monthly-customers">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Billing Summary -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-info text-white fw-bold">
+            <i class="bi bi-receipt me-2"></i>کۆی وەسلی مانگانە (لە سەردەمی کاتیەکەدا بۆ)
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-6 col-md-3 text-center">
+                <div class="text-muted small">شوشتنی مانگانە</div>
+                <div class="fs-4 fw-bold text-primary" id="rep-m-washes">0</div>
+              </div>
+              <div class="col-6 col-md-3 text-center">
+                <div class="text-muted small">کۆی دەدرەدان</div>
+                <div class="fs-4 fw-bold text-warning" id="rep-m-total-due">0 د.ع</div>
+              </div>
+              <div class="col-6 col-md-3 text-center">
+                <div class="text-muted small">دراوا</div>
+                <div class="fs-4 fw-bold text-success" id="rep-m-collected">0 د.ع</div>
+              </div>
+              <div class="col-6 col-md-3 text-center">
+                <div class="text-muted small">قەرزی ماوە</div>
+                <div class="fs-4 fw-bold text-danger" id="rep-m-outstanding">0 د.ع</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== USERS PAGE ===== -->
+    <div id="page-users" class="page">
+      <div class="page-header">
+        <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>بەڕێوەبردنی بەکارهێنەران</h4>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addUserModal')">
+          <i class="bi bi-person-plus"></i> بەکارهێنەری نوێ
+        </button>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>ناوی بەکارهێنەر</th>
+                <th>رۆل</th>
+                <th>دروستکراوە</th>
+                <th class="text-center">کردار</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr><td colspan="5" class="text-center text-muted py-3">هیچ بەکارهێنەرێک نییە</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="alert alert-info mt-3 small">
+        <i class="bi bi-info-circle me-1"></i>
+        <strong>ئەدمین:</strong> دەستڕاگەیشتنی تەواو بە هەموو بەشەکان &nbsp;|&nbsp;
+        <strong>یوزەر:</strong> تەنها تۆماری سەیارە، سەیارەی چالاک، و کریاران
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== ADD USER MODAL ===== -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>بەکارهێنەری نوێ</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form onsubmit="submitAddUser(event)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">ناوی بەکارهێنەر*</label>
+            <input type="text" class="form-control" id="newUserName" placeholder="username" required autocomplete="off" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">وشەی نهێنی*</label>
+            <input type="password" class="form-control" id="newUserPass" placeholder="password" required autocomplete="off" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">رۆل*</label>
+            <div class="row g-2">
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="newUserRole" id="roleAdmin" value="admin" required />
+                <label class="btn btn-outline-danger w-100" for="roleAdmin">
+                  <i class="bi bi-shield-fill-check d-block fs-4"></i>ئەدمین
+                </label>
+              </div>
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="newUserRole" id="roleUser" value="user" />
+                <label class="btn btn-outline-primary w-100" for="roleUser">
+                  <i class="bi bi-person-fill d-block fs-4"></i>یوزەر
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">داخستن</button>
+          <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>تۆمار بکە</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD CAR EXPENSE MODAL ===== -->
+<div class="modal fade" id="expenseModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title"><i class="bi bi-wallet2 me-2"></i>زیادکردنی خەرجی</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form onsubmit="submitExpense(event)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">بابەتی خەرجی*</label>
+            <input type="text" class="form-control" id="expDesc" placeholder="وێنە: کیمیای شوشتن" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">کەتەگۆری*</label>
+            <div class="row g-2" id="expCategoryBtns">
+              <div class="col-4">
+                <input type="radio" class="btn-check" name="expCat" id="cat1" value="ئامراز" required />
+                <label class="btn btn-outline-secondary w-100 btn-sm" for="cat1"><i class="bi bi-tools d-block"></i>ئامراز</label>
+              </div>
+              <div class="col-4">
+                <input type="radio" class="btn-check" name="expCat" id="cat2" value="مووچە" />
+                <label class="btn btn-outline-secondary w-100 btn-sm" for="cat2"><i class="bi bi-person-badge d-block"></i>مووچە</label>
+              </div>
+              <div class="col-4">
+                <input type="radio" class="btn-check" name="expCat" id="cat3" value="کارەبا و ئاو" />
+                <label class="btn btn-outline-secondary w-100 btn-sm" for="cat3"><i class="bi bi-lightning d-block"></i>کارەبا/ئاو</label>
+              </div>
+              <div class="col-4">
+                <input type="radio" class="btn-check" name="expCat" id="cat4" value="کیمیا" />
+                <label class="btn btn-outline-secondary w-100 btn-sm" for="cat4"><i class="bi bi-droplet d-block"></i>کیمیا</label>
+              </div>
+              <div class="col-4">
+                <input type="radio" class="btn-check" name="expCat" id="cat5" value="تر" />
+                <label class="btn btn-outline-secondary w-100 btn-sm" for="cat5"><i class="bi bi-three-dots d-block"></i>تر</label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3 row g-2">
+            <div class="col-6">
+              <label class="form-label">بڕی خەرجی (د.ع)*</label>
+              <input type="number" class="form-control" id="expAmount" placeholder="0" required min="0" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">بەروار*</label>
+              <input type="date" class="form-control" id="expDate" required />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">تێبینی</label>
+            <textarea class="form-control" id="expNote" rows="2" placeholder="تێبینی زیادەی..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">داخستن</button>
+          <button type="submit" class="btn btn-danger"><i class="bi bi-save me-1"></i>تۆمار بکە</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD CUSTOMER MODAL ===== -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>زیادکردنی کریار</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form onsubmit="submitCustomer(event)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">ناوی کریار*</label>
+            <input type="text" class="form-control" id="custName" placeholder="ناوی تەواو" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">ژمارەی تەلەفۆن</label>
+            <input type="tel" class="form-control" id="custPhone" placeholder="07xxxxxxxxx" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">جۆری کریار*</label>
+            <div class="row g-2">
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="custType" id="custTypeCash" value="cash" required />
+                <label class="btn btn-outline-warning w-100" for="custTypeCash">
+                  <i class="bi bi-cash-coin d-block fs-4"></i>نقد
+                </label>
+              </div>
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="custType" id="custTypeMonthly" value="monthly" />
+                <label class="btn btn-outline-info w-100" for="custTypeMonthly">
+                  <i class="bi bi-calendar-check d-block fs-4"></i>مانگانە
+                </label>
+              </div>
+            </div>
+          </div>
+          <div id="monthlyContractDiv" style="display:none">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">نرخی شوشتن بەپێی کەتەگۆری (د.ع)</label>
+              <div class="form-text mb-2">بۆ هەر کەتەگۆریێک نرخی تایبەتی بنووسە &mdash; سەرەی مانگ کۆی شوشتن &times; نرخ = دەدرەدان</div>
+              <div id="custCategoryPriceList"></div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">تێبینی</label>
+            <input type="text" class="form-control" id="custNote" placeholder="تێبینی..." />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">داخستن</button>
+          <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>تۆمار بکە</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD CATEGORY MODAL ===== -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary text-white">
+        <h5 class="modal-title"><i class="bi bi-tags me-2"></i>بەڕێوەبردنی کەتەگۆریەکان</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Add new category form -->
+        <div class="card border-dashed mb-3" style="border:2px dashed #dee2e6">
+          <div class="card-body">
+            <div class="fw-bold mb-2 small text-muted">کەتەگۆری نوێ زیاد بکە</div>
+            <div class="row g-2">
+              <div class="col-5">
+                <input type="text" class="form-control form-control-sm" id="newCatName" placeholder="ناوی کەتەگۆری" />
+              </div>
+              <div class="col-4">
+                <div class="input-group input-group-sm">
+                  <input type="number" class="form-control" id="newCatPrice" placeholder="نرخ" min="0" />
+                  <span class="input-group-text">د.ع</span>
+                </div>
+              </div>
+              <div class="col-3">
+                <button class="btn btn-secondary btn-sm w-100" onclick="submitAddCategory()">
+                  <i class="bi bi-plus"></i> زیاد
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Existing categories list -->
+        <div id="categoriesList"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">داخستن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== INVOICE DETAIL MODAL ===== -->
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="invoiceModalTitle"><i class="bi bi-receipt me-2"></i>وەسلی مانگانە</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="invoiceModalBody">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">داخستن</button>
+        <button type="button" class="btn btn-success" id="invoicePayBtn" onclick="openPayFromInvoice()">
+          <i class="bi bi-cash-coin me-1"></i>تۆمارکردنی پارەدان
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAYMENT MODAL ===== -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title"><i class="bi bi-cash-coin me-2"></i>تۆمارکردنی پارەدان</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form onsubmit="submitPayment(event)">
+        <div class="modal-body">
+          <input type="hidden" id="payCustomerId" />
+          <input type="hidden" id="payMonth" />
+
+          <div class="card bg-light border-0 rounded-3 mb-3 p-3" id="paymentSummaryCard">
+            <!-- filled by JS -->
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">بڕی پارەی دراو (د.ع)*</label>
+            <div class="input-group">
+              <input type="number" class="form-control form-control-lg" id="payAmount" placeholder="0" min="1" required />
+              <span class="input-group-text">د.ع</span>
+            </div>
+            <div class="mt-2 d-flex gap-2 flex-wrap" id="payQuickBtns">
+              <!-- quick-fill buttons injected by JS -->
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">بەروار*</label>
+            <input type="date" class="form-control" id="payDate" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">تێبینی</label>
+            <input type="text" class="form-control" id="payNote" placeholder="هەر تێبینێک..." />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">داخستن</button>
+          <button type="submit" class="btn btn-success btn-lg px-4">
+            <i class="bi bi-check-circle me-1"></i>تۆمار بکە
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EXIT CONFIRM MODAL ===== -->
+<div class="modal fade" id="exitModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title"><i class="bi bi-box-arrow-right me-2"></i>دەرچوونی سەیارە</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="exitModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">هەڵوەشاندنەوە</button>
+        <button type="button" class="btn btn-success" id="confirmExitBtn">
+          <i class="bi bi-check-circle me-1"></i>دەرچوون و تۆمارکردن
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Backup / Restore Modal -->
+<div class="modal fade" id="backupModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg overflow-hidden">
+      <div class="modal-header border-0 text-white py-3" style="background:linear-gradient(135deg,#0d6efd,#0a4bb5)">
+        <h5 class="modal-title fw-bold"><i class="bi bi-cloud-arrow-down me-2"></i>بەکئەپ و گەڕاندنەوە</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+
+        <!-- Export -->
+        <div class="rounded-3 p-3 mb-3" style="background:#e8f5e9;border:1px solid #a5d6a7">
+          <div class="fw-bold mb-1"><i class="bi bi-box-arrow-up text-success me-2"></i>دەرهێنانی داتا (Export)</div>
+          <div class="small text-muted mb-3">هەموو داتاکانت وەک فایلی JSON دادەبەزێت. لە شوێنێکی سەلامەت بیپارێزە.</div>
+          <button class="btn btn-success w-100" onclick="exportData()">
+            <i class="bi bi-download me-2"></i>دادەبەزاندنی بەکئەپ
+          </button>
+        </div>
+
+        <!-- Import -->
+        <div class="rounded-3 p-3" style="background:#fff3e0;border:1px solid #ffcc80">
+          <div class="fw-bold mb-1"><i class="bi bi-box-arrow-in-down text-warning me-2"></i>گەڕاندنەوەی داتا (Import)</div>
+          <div class="small text-muted mb-3">فایلی بەکئەپی پێشوو هەڵبژێرە. <strong class="text-danger">داتای ئێستا جێگادەگیرێت!</strong></div>
+          <label class="btn btn-warning w-100 mb-0">
+            <i class="bi bi-upload me-2"></i>هەڵبژاردنی فایلی بەکئەپ
+            <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importData(this)" />
+          </label>
+        </div>
+
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">داخستن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Modal -->
+<div class="modal fade" id="resetModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>ڕیسیتکردنەوەی سیستەم</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger d-flex gap-2 align-items-start mb-3">
+          <i class="bi bi-exclamation-octagon-fill flex-shrink-0 mt-1"></i>
+          <div><strong>ئەگەردار باشە!</strong> داتای سەرایەکاندەڕایی نییە و گەڕایینەوەی کردن نییە.</div>
+        </div>
+
+        <p class="fw-semibold mb-3">ھەلبژێرە چی ریسیت بکەیت:</p>
+
+        <div class="list-group mb-3">
+          <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-check2-all me-2 text-danger"></i><strong>هەمووی داتا</strong></span>
+            <input class="form-check-input" type="checkbox" id="rst-all" onchange="resetToggleAll(this)" />
+          </label>
+          <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-clock-history me-2 text-primary"></i>مێژووی شوشتن (ھەموو سەیارەکان)</span>
+            <input class="form-check-input reset-chk" type="checkbox" id="rst-cars" />
+          </label>
+          <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-people-fill me-2 text-success"></i>کریاران</span>
+            <input class="form-check-input reset-chk" type="checkbox" id="rst-customers" />
+          </label>
+          <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-wallet2 me-2 text-danger"></i>خەرجیەکان</span>
+            <input class="form-check-input reset-chk" type="checkbox" id="rst-expenses" />
+          </label>
+          <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-receipt me-2 text-info"></i>پارەدانەکانی مانگانە</span>
+            <input class="form-check-input reset-chk" type="checkbox" id="rst-payments" />
+          </label>
+          <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-tags me-2 text-warning"></i>کەتەگۆریی دەستکاری</span>
+            <input class="form-check-input reset-chk" type="checkbox" id="rst-categories" />
+          </label>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-danger">داستەڕینەوەی نوسین: <code>RESET</code></label>
+          <input type="text" class="form-control border-danger" id="resetConfirmText" placeholder="RESET بنووسە..." />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">هەڵوەشاندنەوە</button>
+        <button type="button" class="btn btn-danger" onclick="executeReset()">
+          <i class="bi bi-trash3-fill me-1"></i>ڕیسیتکردنەوە
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== QR CODE DISPLAY MODAL ===== -->
+<div class="modal fade" id="qrDisplayModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title"><i class="bi bi-qr-code me-2"></i><span id="qrDisplayTitle">QR کۆدی سەیارە</span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <div id="qrCodeCanvas" class="d-inline-block mb-3"></div>
+        <div class="fw-bold fs-5" id="qrDisplayPlate"></div>
+        <div class="text-muted small mt-1" id="qrDisplaySub"></div>
+        <div class="mt-3">
+          <button class="btn btn-outline-secondary btn-sm" onclick="printQrCode()">
+            <i class="bi bi-printer me-1"></i>چاپکردن
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QR SCAN MODAL ===== -->
+<div class="modal fade" id="qrScanModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title"><i class="bi bi-qr-code-scan me-2"></i>سکانی QR - زانیاری سەیارە</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="qrScanResult" class="d-none mb-3">
+          <div class="card border-0 bg-light p-3 text-center">
+            <div class="text-muted small mb-1">پلاکەی سەیارە</div>
+            <div class="fs-4 fw-bold text-primary" id="scanResultPlate"></div>
+            <hr class="my-2" />
+            <div class="fs-2 fw-bold text-success" id="scanResultCount"></div>
+            <div class="text-muted">جار سەردانیی کردووە</div>
+            <div class="mt-2 small text-muted" id="scanResultLast"></div>
+          </div>
+        </div>
+        <div id="qrScanReader" style="width:100%"></div>
+        <div id="qrScanStatus" class="text-center text-muted small mt-2">کەمەرا بەرەکتویە.. QR بخەیبەردە</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">داخستن</button>
+        <button class="btn btn-info text-white" onclick="resetQrScan()" id="scanAgainBtn" style="display:none">
+          <i class="bi bi-arrow-repeat me-1"></i>دوبارە سکان بکە
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:9999">
+  <div id="appToast" class="toast align-items-center border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body fw-bold" id="toastMsg"></div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

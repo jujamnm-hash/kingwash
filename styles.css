@@ -1,0 +1,435 @@
+/* ==========================================
+   KING WASH - ستایلەکان
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+:root {
+  --primary: #0d6efd;
+  --success: #198754;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #0dcaf0;
+  --sidebar-width: 220px;
+  --bottom-nav-height: 64px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', 'Segoe UI', sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: calc(100vh - 56px);
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: #adb5bd;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  text-align: right;
+  direction: rtl;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.sidebar-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.sidebar-btn.active {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ---- Main Content ---- */
+.main-content {
+  padding: 20px;
+  min-height: calc(100vh - 56px);
+  padding-bottom: calc(var(--bottom-nav-height) + 20px);
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    padding-bottom: 20px;
+  }
+}
+
+/* ---- Page Header ---- */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+/* ---- Pages ---- */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* ---- Stat Cards ---- */
+.stat-card {
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.stat-value {
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+/* ---- Active Car Cards ---- */
+.car-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border-right: 5px solid var(--warning);
+  transition: transform 0.2s;
+}
+
+.car-card:hover {
+  transform: translateY(-2px);
+}
+
+.car-card .car-color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #dee2e6;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.car-card .timer-badge {
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: #fff3cd;
+  color: #856404;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #ffc107;
+}
+
+.car-card .car-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+/* ---- Car Size Buttons ---- */
+.car-size-btn {
+  transition: all 0.2s;
+  border-radius: 12px !important;
+}
+
+.btn-check:checked + .car-size-btn {
+  transform: scale(1.02);
+}
+
+/* ---- Bottom Navigation ---- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bottom-nav-height);
+  background: #fff;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 1000;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 0.65rem;
+  font-family: 'Cairo', sans-serif;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  transition: all 0.2s;
+  cursor: pointer;
+  min-width: 52px;
+}
+
+.nav-btn i {
+  font-size: 1.3rem;
+}
+
+.nav-btn.active {
+  color: var(--primary);
+  background: rgba(13, 110, 253, 0.1);
+}
+
+.nav-btn span {
+  white-space: nowrap;
+}
+
+/* ---- Customer Card ---- */
+.customer-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  border-top: 4px solid var(--primary);
+}
+
+.customer-card.monthly {
+  border-top-color: var(--info);
+}
+
+.customer-card.cash {
+  border-top-color: var(--warning);
+}
+
+/* ---- Tables ---- */
+.table th {
+  font-weight: 700;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.table td {
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+/* ---- Modals ---- */
+.modal-content {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ---- Navbar ---- */
+.navbar {
+  height: 56px;
+  z-index: 999;
+}
+
+/* ---- Badges ---- */
+.badge {
+  font-family: 'Cairo', sans-serif;
+}
+
+/* ---- Color dot in forms ---- */
+.form-control-color {
+  max-width: 50px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 3px;
+}
+
+/* ---- Print styles ---- */
+@media print {
+  .sidebar, .bottom-nav, .navbar, .btn, .page-header button {
+    display: none !important;
+  }
+  .main-content {
+    padding: 10px !important;
+  }
+}
+
+/* ---- RTL fixes ---- */
+.input-group-text {
+  font-family: 'Cairo', sans-serif;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ---- Alert / Price Preview ---- */
+#pricePreview {
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+/* ---- Responsive table ---- */
+@media (max-width: 576px) {
+  .table-responsive {
+    font-size: 0.78rem;
+  }
+  .stat-value {
+    font-size: 1.3rem;
+  }
+}
+
+/* ---- Animation ---- */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.car-card {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Toast ---- */
+#appToast {
+  font-family: 'Cairo', sans-serif;
+  border-radius: 12px;
+}
+
+/* ---- Sidebar logo ---- */
+.sidebar-logo {
+  padding: 8px 0 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ---- Status pills ---- */
+.status-active {
+  background: #fff3cd;
+  color: #856404;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.status-done {
+  background: #d1e7dd;
+  color: #0f5132;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* ---- Billing Cards ---- */
+.billing-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.3s ease;
+}
+
+.billing-stat-row {
+  display: flex;
+  gap: 0;
+  background: #f8f9fa;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.billing-stat {
+  flex: 1;
+  text-align: center;
+  padding: 10px 4px;
+  border-left: 1px solid #dee2e6;
+}
+
+.billing-stat:last-child {
+  border-left: none;
+}
+
+.billing-stat-val {
+  font-size: 1.15rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.billing-stat-lbl {
+  font-size: 0.7rem;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+/* ---- Invoice table ---- */
+#invoiceModalBody .table-sm td,
+#invoiceModalBody .table-sm th {
+  font-size: 0.82rem;
+}
