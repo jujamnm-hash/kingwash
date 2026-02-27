@@ -83,7 +83,7 @@
   <button class="nav-btn admin-only" onclick="showPage('history')" id="btn-history">
     <i class="bi bi-clock-history"></i><span>مێژوو</span>
   </button>
-  <button class="nav-btn admin-only" onclick="toggleMoreMenu()" id="btn-more">
+  <button class="nav-btn" onclick="toggleMoreMenu()" id="btn-more" style="display:none">
     <i class="bi bi-grid"></i><span>زیاتر</span>
   </button>
 </nav>
@@ -97,39 +97,51 @@
     </div>
     <div class="row g-0">
       <div class="col-4">
-        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('monthlyBilling')">
-          <i class="bi bi-receipt fs-4" style="color:#38bdf8"></i>
-          <span class="small" style="color:#cbd5e1">مانگانە</span>
+        <button class="w-100 border-0 py-3 more-menu-btn" style="background:transparent" onclick="closeMoreMenu();showPage('monthlyBilling')">
+          <div class="d-flex flex-column align-items-center gap-1">
+            <i class="bi bi-receipt fs-4" style="color:#38bdf8"></i>
+            <span class="small" style="color:#cbd5e1">مانگانە</span>
+          </div>
         </button>
       </div>
       <div class="col-4" style="border-right:1px solid rgba(255,255,255,0.08);border-left:1px solid rgba(255,255,255,0.08)">
-        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('reports')">
-          <i class="bi bi-bar-chart fs-4" style="color:#a78bfa"></i>
-          <span class="small" style="color:#cbd5e1">ڕاپۆرت</span>
+        <button class="w-100 border-0 py-3 more-menu-btn" style="background:transparent" onclick="closeMoreMenu();showPage('reports')">
+          <div class="d-flex flex-column align-items-center gap-1">
+            <i class="bi bi-bar-chart fs-4" style="color:#a78bfa"></i>
+            <span class="small" style="color:#cbd5e1">ڕاپۆرت</span>
+          </div>
         </button>
       </div>
       <div class="col-4">
-        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('expenses')">
-          <i class="bi bi-wallet2 fs-4" style="color:#fb923c"></i>
-          <span class="small" style="color:#cbd5e1">خەرجی</span>
+        <button class="w-100 border-0 py-3 more-menu-btn" style="background:transparent" onclick="closeMoreMenu();showPage('expenses')">
+          <div class="d-flex flex-column align-items-center gap-1">
+            <i class="bi bi-wallet2 fs-4" style="color:#fb923c"></i>
+            <span class="small" style="color:#cbd5e1">خەرجی</span>
+          </div>
         </button>
       </div>
       <div class="col-4" style="border-top:1px solid rgba(255,255,255,0.08)">
-        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();showPage('users')">
-          <i class="bi bi-people-fill fs-4" style="color:#34d399"></i>
-          <span class="small" style="color:#cbd5e1">بەکارهێنەر</span>
+        <button class="w-100 border-0 py-3 more-menu-btn" style="background:transparent" onclick="closeMoreMenu();showPage('users')">
+          <div class="d-flex flex-column align-items-center gap-1">
+            <i class="bi bi-people-fill fs-4" style="color:#34d399"></i>
+            <span class="small" style="color:#cbd5e1">بەکارهێنەر</span>
+          </div>
         </button>
       </div>
       <div class="col-4" style="border-top:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08);border-left:1px solid rgba(255,255,255,0.08)">
-        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();openModal('backupModal')">
-          <i class="bi bi-cloud-arrow-down fs-4" style="color:#60a5fa"></i>
-          <span class="small" style="color:#cbd5e1">بەکئەپ</span>
+        <button class="w-100 border-0 py-3 more-menu-btn" style="background:transparent" onclick="closeMoreMenu();openModal('backupModal')">
+          <div class="d-flex flex-column align-items-center gap-1">
+            <i class="bi bi-cloud-arrow-down fs-4" style="color:#60a5fa"></i>
+            <span class="small" style="color:#cbd5e1">بەکئەپ</span>
+          </div>
         </button>
       </div>
       <div class="col-4" style="border-top:1px solid rgba(255,255,255,0.08)">
-        <button class="w-100 border-0 py-3 d-flex flex-column align-items-center gap-1 admin-only more-menu-btn" onclick="closeMoreMenu();openModal('resetModal')">
-          <i class="bi bi-arrow-counterclockwise fs-4" style="color:#f87171"></i>
-          <span class="small" style="color:#cbd5e1">ڕیسیت</span>
+        <button class="w-100 border-0 py-3 more-menu-btn" style="background:transparent" onclick="closeMoreMenu();openModal('resetModal')">
+          <div class="d-flex flex-column align-items-center gap-1">
+            <i class="bi bi-arrow-counterclockwise fs-4" style="color:#f87171"></i>
+            <span class="small" style="color:#cbd5e1">ڕیسیت</span>
+          </div>
         </button>
       </div>
     </div>

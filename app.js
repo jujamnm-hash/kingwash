@@ -87,6 +87,10 @@ function applyRoleUI() {
     el.style.display = admin ? '' : 'none';
   });
 
+  // btn-more: show for admin only on mobile
+  const btnMore = document.getElementById('btn-more');
+  if (btnMore) btnMore.style.display = admin ? '' : 'none';
+
   // bottom nav — hide restricted buttons for user role
   const allNavBtns = { dashboard:'btn-dashboard', history:'btn-history', monthlyBilling:'btn-monthlyBilling', reports:'btn-reports', expenses:'btn-expenses' };
   Object.entries(allNavBtns).forEach(([page, id]) => {
