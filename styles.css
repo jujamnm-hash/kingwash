@@ -2,7 +2,7 @@
    KING WASH - ستایلەکان
    ========================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+/* NOTE: Cairo font loaded via <link> in HTML for better mobile performance */
 
 :root {
   --primary: #0d6efd;
@@ -19,7 +19,7 @@
 }
 
 body {
-  font-family: 'Cairo', 'Segoe UI', sans-serif;
+  font-family: 'Cairo', 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
   background-color: #f0f2f5;
   color: #333;
   min-height: 100vh;
