@@ -2,7 +2,47 @@
    KING WASH - ستایلەکان
    ========================================== */
 
-/* NOTE: Cairo font loaded via <link> in HTML for better mobile performance */
+/* ---- Self-hosted Cairo font (Arabic/Kurdish + Latin) ---- */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/Cairo-arabic.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/Cairo-arabic.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/Cairo-arabic.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('fonts/Cairo-arabic.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('fonts/Cairo-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+2000-206F, U+20AC, U+FEFF, U+FFFD;
+}
 
 :root {
   --primary: #0d6efd;
@@ -19,7 +59,7 @@
 }
 
 body {
-  font-family: 'Cairo', 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
   background-color: #f0f2f5;
   color: #333;
   min-height: 100vh;
