@@ -89,7 +89,10 @@ function applyRoleUI() {
 
   // btn-more: show for admin only on mobile
   const btnMore = document.getElementById('btn-more');
-  if (btnMore) btnMore.style.display = admin ? '' : 'none';
+  if (btnMore) {
+    if (admin) btnMore.classList.remove('menu-hidden');
+    else       btnMore.classList.add('menu-hidden');
+  }
 
   // bottom nav — hide restricted buttons for user role
   const allNavBtns = { dashboard:'btn-dashboard', history:'btn-history', monthlyBilling:'btn-monthlyBilling', reports:'btn-reports', expenses:'btn-expenses' };
@@ -1985,21 +1988,27 @@ function updateResetCounts() {
 function toggleMoreMenu() {
   const menu     = document.getElementById('moreMenu');
   const backdrop = document.getElementById('moreMenuBackdrop');
+  const btn      = document.getElementById('btn-more');
   if (!menu) return;
-  const visible = menu.style.display !== 'none';
-  menu.style.display      = visible ? 'none' : 'block';
-  backdrop.style.display  = visible ? 'none' : 'block';
-  const btn = document.getElementById('btn-more');
-  if (btn) btn.classList.toggle('active', !visible);
+  const isOpen = !menu.classList.contains('menu-hidden');
+  if (isOpen) {
+    menu.classList.add('menu-hidden');
+    backdrop.classList.add('menu-hidden');
+    if (btn) btn.classList.remove('active');
+  } else {
+    menu.classList.remove('menu-hidden');
+    backdrop.classList.remove('menu-hidden');
+    if (btn) btn.classList.add('active');
+  }
 }
 
 function closeMoreMenu() {
   const menu     = document.getElementById('moreMenu');
   const backdrop = document.getElementById('moreMenuBackdrop');
-  if (menu)     menu.style.display     = 'none';
-  if (backdrop) backdrop.style.display = 'none';
-  const btn = document.getElementById('btn-more');
-  if (btn) btn.classList.remove('active');
+  const btn      = document.getElementById('btn-more');
+  if (menu)     menu.classList.add('menu-hidden');
+  if (backdrop) backdrop.classList.add('menu-hidden');
+  if (btn)      btn.classList.remove('active');
 }
 
 // -------- Backup / Restore --------

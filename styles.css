@@ -464,6 +464,10 @@ input, select, textarea {
   }
 }
 
+.menu-hidden {
+  display: none !important;
+}
+
 .more-menu-btn {
   background: transparent;
   cursor: pointer;
