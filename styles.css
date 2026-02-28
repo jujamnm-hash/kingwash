@@ -367,128 +367,364 @@ body {
   }
 }
 
-/* ---- Sunmi V2 / Mobile Touch Optimization ---- */
+/* ============================================
+   MOBILE RESPONSIVE — تەواو بۆ مۆبایل
+   ============================================ */
 
-/* Prevent double-tap zoom, smooth tap response */
+/* --- Global mobile base --- */
 * {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-/* Prevent horizontal overflow on small screens */
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
 }
 
-/* Ensure inputs don't trigger zoom on iOS/Android (min 16px) */
 input, select, textarea {
-  font-size: 16px !important;
+  font-size: 16px !important; /* prevent iOS zoom */
 }
 
-/* Larger tap targets for all buttons on touch */
+/* ============================================
+   MOBILE LAYOUT  (max-width: 768px)
+   ============================================ */
 @media (max-width: 768px) {
-  .btn {
-    min-height: 44px;
-    font-size: 0.95rem !important;
+
+  /* --- Root vars --- */
+  :root {
+    --bottom-nav-height: 68px;
   }
-  .btn-sm {
-    min-height: 36px;
-    font-size: 0.82rem !important;
-    padding: 4px 10px !important;
-  }
-  .nav-btn {
-    min-width: 44px;
+
+  /* --- Navbar --- */
+  .navbar {
+    padding: 8px 12px !important;
     min-height: 52px;
-    padding: 6px 4px;
-    font-size: 0.6rem;
   }
-  .nav-btn i {
-    font-size: 1.4rem;
+  .navbar-brand {
+    font-size: 1rem !important;
+    letter-spacing: 0.5px;
   }
-  .sidebar-btn {
-    min-height: 48px;
-    font-size: 1rem;
-    padding: 12px 16px;
+  .navbar .badge {
+    font-size: 0.68rem;
+    padding: 4px 8px;
   }
+  .navbar .btn-sm {
+    min-height: 32px;
+    min-width: 32px;
+    padding: 4px 8px !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* --- Main Content --- */
   .main-content {
-    padding: 12px 10px;
-    padding-bottom: calc(var(--bottom-nav-height) + 12px);
+    padding: 14px 12px;
+    padding-bottom: calc(var(--bottom-nav-height) + 16px);
   }
+
+  /* --- Page Header --- */
   .page-header {
-    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
+  .page-header h4, .page-header h5 {
+    font-size: 1rem !important;
+    margin: 0;
+  }
+  .page-header .btn {
+    font-size: 0.82rem !important;
+    min-height: 36px;
+    padding: 6px 12px !important;
+  }
+
+  /* --- Stat Cards --- */
   .stat-card {
-    padding: 14px 10px;
+    padding: 16px 12px 14px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: -16px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+  }
+  .stat-icon {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+    opacity: 0.9;
   }
   .stat-value {
-    font-size: 1.4rem;
+    font-size: 1.5rem !important;
+    font-weight: 900;
+    line-height: 1.1;
   }
   .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
+    opacity: 0.9;
+    margin-top: 4px;
+    font-weight: 600;
   }
-  .car-card {
-    padding: 14px 12px;
+
+  /* --- Cards --- */
+  .card {
+    border-radius: 14px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07) !important;
+    border: none !important;
   }
   .card-body {
-    padding: 12px !important;
+    padding: 14px !important;
   }
-  /* Make form rows single column on narrow screens */
-  .row.g-3 > .col-md-4,
-  .row.g-3 > .col-md-6 {
-    flex: 0 0 100%;
-    max-width: 100%;
+  .card-header {
+    padding: 12px 14px !important;
+    font-size: 0.9rem;
+    border-radius: 14px 14px 0 0 !important;
   }
-  /* Table: reduce font more on very small width */
-  .table th, .table td {
-    font-size: 0.75rem;
-    padding: 6px 4px;
+
+  /* --- Buttons --- */
+  .btn {
+    min-height: 44px;
+    font-size: 0.92rem !important;
+    border-radius: 10px !important;
+    font-weight: 600;
   }
-  /* Modal fullscreen on mobile */
-  .modal-dialog {
-    margin: 8px;
+  .btn-sm {
+    min-height: 36px !important;
+    font-size: 0.8rem !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
   }
-  .modal-dialog.modal-lg {
-    margin: 8px;
+  .btn-lg {
+    min-height: 52px !important;
+    font-size: 1rem !important;
   }
-  /* Bottom nav height increase for easier tapping */
-  :root {
-    --bottom-nav-height: 70px;
+  .btn i {
+    vertical-align: middle;
   }
+
+  /* --- Bottom Navigation --- */
   .bottom-nav {
-    height: 70px;
+    height: var(--bottom-nav-height) !important;
+    padding: 0 4px;
+    background: #fff;
+    border-top: 1px solid #e9ecef;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
   }
-  /* Navbar brand text adjustment */
-  .navbar-brand {
-    font-size: 1.1rem !important;
+  .nav-btn {
+    flex: 1;
+    min-height: 60px;
+    padding: 6px 2px;
+    border-radius: 10px;
+    font-size: 0.6rem !important;
+    font-weight: 600;
+    color: #94a3b8;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: none;
+    background: transparent;
   }
-  /* Input groups fill width */
+  .nav-btn i {
+    font-size: 1.35rem !important;
+  }
+  .nav-btn.active {
+    color: var(--primary);
+    background: #eff6ff;
+    border-radius: 10px;
+  }
+  .nav-btn.active i {
+    color: var(--primary);
+  }
+
+  /* --- Forms --- */
+  .form-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .form-control, .form-select {
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    border: 1.5px solid #dee2e6;
+    transition: border-color 0.2s;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.12);
+  }
   .input-group {
     flex-wrap: nowrap;
   }
-}
+  .input-group-text {
+    border-radius: 10px 0 0 10px !important;
+    padding: 10px 12px !important;
+    background: #f8f9fa;
+  }
+  .mb-3, .mb-4 {
+    margin-bottom: 14px !important;
+  }
 
-/* Sunmi V2 exact: 720px wide */
-@media (max-width: 720px) {
-  .container-fluid {
-    padding-right: 8px;
-    padding-left: 8px;
-  }
-  .badge {
-    font-size: 0.7rem;
-  }
-  code {
-    font-size: 0.78rem;
-  }
-  /* Active cars - 1 col on Sunmi */
-  .col-lg-4.col-md-6 {
+  /* --- Form rows: single column on mobile --- */
+  .row.g-3 > [class*="col-md-"],
+  .row.g-3 > [class*="col-lg-"] {
     flex: 0 0 100%;
     max-width: 100%;
   }
-  /* Billing cards single col */
+
+  /* --- Tables --- */
+  .table th, .table td {
+    font-size: 0.74rem;
+    padding: 8px 6px;
+    vertical-align: middle;
+  }
+  .table thead th {
+    background: #f8fafc;
+    font-weight: 700;
+    color: #475569;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* --- Car Card --- */
+  .car-card {
+    padding: 16px 14px;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+  }
+
+  /* --- Modals --- */
+  .modal-dialog {
+    margin: 6px !important;
+    max-width: calc(100vw - 12px) !important;
+  }
+  .modal-content {
+    border-radius: 18px !important;
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 14px 16px !important;
+  }
+  .modal-body {
+    padding: 16px !important;
+  }
+  .modal-footer {
+    padding: 12px 16px !important;
+    gap: 8px;
+  }
+  .modal-footer .btn {
+    flex: 1;
+  }
+
+  /* --- Alerts --- */
+  .alert {
+    border-radius: 10px;
+    font-size: 0.88rem;
+    padding: 10px 14px;
+  }
+
+  /* --- Badges --- */
+  .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  /* --- Containers --- */
+  .container-fluid {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  /* --- Active Cars grid --- */
+  .col-lg-4.col-md-6,
   .col-md-6.col-lg-4 {
     flex: 0 0 100%;
     max-width: 100%;
+  }
+
+  /* --- Net profit / summary cards --- */
+  .card .fs-4 {
+    font-size: 1.25rem !important;
+  }
+  .card .text-muted.small {
+    font-size: 0.78rem;
+  }
+
+  /* --- Filter bar --- */
+  .d-flex.gap-2.flex-wrap {
+    gap: 8px !important;
+  }
+
+  /* --- Section titles inside pages --- */
+  h4, h5 {
+    font-size: 1rem;
+  }
+
+  /* --- Login screen --- */
+  #loginScreen .card {
+    margin: 12px !important;
+    border-radius: 20px !important;
+  }
+  #loginScreen .bg-dark {
+    padding: 24px 16px !important;
+  }
+  #loginScreen .card-body {
+    padding: 20px 18px !important;
+  }
+
+  /* --- More Menu --- */
+  .more-menu-panel {
+    bottom: calc(var(--bottom-nav-height) + 4px) !important;
+  }
+}
+
+/* ============================================
+   VERY SMALL SCREENS (max-width: 400px)
+   ============================================ */
+@media (max-width: 400px) {
+  .stat-value {
+    font-size: 1.3rem !important;
+  }
+  .stat-icon {
+    font-size: 1.4rem;
+  }
+  .nav-btn span {
+    font-size: 0.55rem !important;
+  }
+  .nav-btn i {
+    font-size: 1.2rem !important;
+  }
+  .main-content {
+    padding: 10px 8px;
+    padding-bottom: calc(var(--bottom-nav-height) + 14px);
+  }
+  .table th, .table td {
+    font-size: 0.68rem;
+    padding: 6px 4px;
   }
 }
 
