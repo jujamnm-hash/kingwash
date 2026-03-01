@@ -28,9 +28,26 @@ let _db = null;
 const _FB_COL = 'kingwash';
 const _SYNC_KEYS = ['cw_cars', 'cw_customers', 'cw_expenses', 'cw_categories', 'cw_payments', 'cw_users'];
 
+function _setSyncStatus(status) {
+  const dot = document.getElementById('syncDot');
+  if (!dot) return;
+  const map = {
+    off:         { bg: '#6c757d', title: 'ئۆفلاین',          pulse: false },
+    connecting:  { bg: '#ffc107', title: 'تەواوبوون...',     pulse: true  },
+    online:      { bg: '#28a745', title: 'Firebase وەصڵە ✓', pulse: false },
+    error:       { bg: '#dc3545', title: 'Firebase هەڵە',    pulse: false },
+  };
+  const s = map[status] || map.off;
+  dot.style.cssText = `width:10px;height:10px;border-radius:50%;background:${s.bg};`+
+    `display:inline-block;transition:background .4s;vertical-align:middle;`+
+    (s.pulse ? 'animation:kw-pulse 1s infinite;' : '');
+  dot.title = s.title;
+}
+
 async function initFirebaseSync() {
   if (typeof firebase === 'undefined' || !window.FIREBASE_CONFIG ||
-      window.FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return;
+      window.FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') { _setSyncStatus('off'); return; }
+  _setSyncStatus('connecting');
   try {
     if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
     _db = firebase.firestore();
@@ -51,11 +68,14 @@ async function initFirebaseSync() {
         if (newStr !== localStorage.getItem(key)) {
           localStorage.setItem(key, newStr);
           _refreshCurrentPage();
+          showToast('داتاکان نوێ کرایەوە ☁', 'info');
         }
       });
     });
+    _setSyncStatus('online');
     console.log('[KING WASH] Firebase sync چالاک بوو');
   } catch (err) {
+    _setSyncStatus('error');
     console.warn('[KING WASH] Firebase sync هەڵە:', err.message);
   }
 }
