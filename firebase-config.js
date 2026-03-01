@@ -12,10 +12,10 @@
 //  5. ئەو بەهاوانەی خوارەوە لێرەدا جێگوڕبکە
 //
 window.FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyAcLbvkfwPMwuAoXsveYr4bBmXTF1B_34I",
+  authDomain:        "kingwash.firebaseapp.com",
+  projectId:         "kingwash",
+  storageBucket:     "kingwash.firebasestorage.app",
+  messagingSenderId: "693048039830",
+  appId:             "1:693048039830:web:742a253316f74a19ce25b7"
 };
