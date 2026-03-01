@@ -51,14 +51,26 @@ async function initFirebaseSync() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
     _db = firebase.firestore();
-    // Pull latest data from Firestore on startup
+
+    // Sync strategy:
+    // - If Firestore has data → use Firestore (pull)
+    // - If Firestore empty but localStorage has data → push localStorage to Firestore
     for (const key of _SYNC_KEYS) {
       const snap = await _db.collection(_FB_COL).doc(key).get();
       if (snap.exists()) {
+        // Firestore wins — pull to localStorage
         const items = snap.data().items || [];
         localStorage.setItem(key, JSON.stringify(items));
+      } else {
+        // Firestore empty — push existing localStorage data up
+        const local = JSON.parse(localStorage.getItem(key) || '[]');
+        if (local.length > 0) {
+          await _db.collection(_FB_COL).doc(key)
+            .set({ items: local, updatedAt: new Date().toISOString() });
+        }
       }
     }
+
     // Real-time listeners: auto-refresh when another device saves
     _SYNC_KEYS.forEach(key => {
       _db.collection(_FB_COL).doc(key).onSnapshot(snap => {
@@ -72,6 +84,7 @@ async function initFirebaseSync() {
         }
       });
     });
+
     _setSyncStatus('online');
     console.log('[KING WASH] Firebase sync چالاک بوو');
   } catch (err) {
