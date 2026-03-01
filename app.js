@@ -57,7 +57,7 @@ async function initFirebaseSync() {
     // - If Firestore empty but localStorage has data → push localStorage to Firestore
     for (const key of _SYNC_KEYS) {
       const snap = await _db.collection(_FB_COL).doc(key).get();
-      if (snap.exists()) {
+      if (snap.exists) {
         // Firestore wins — pull to localStorage
         const items = snap.data().items || [];
         localStorage.setItem(key, JSON.stringify(items));
@@ -74,7 +74,7 @@ async function initFirebaseSync() {
     // Real-time listeners: auto-refresh when another device saves
     _SYNC_KEYS.forEach(key => {
       _db.collection(_FB_COL).doc(key).onSnapshot(snap => {
-        if (!snap.exists()) return;
+        if (!snap.exists) return;
         const items = snap.data().items || [];
         const newStr = JSON.stringify(items);
         if (newStr !== localStorage.getItem(key)) {
