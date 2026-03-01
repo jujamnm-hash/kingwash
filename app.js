@@ -23,6 +23,61 @@ const KEYS = {
   session: 'cw_session',
 };
 
+// -------- Firebase Sync --------
+let _db = null;
+const _FB_COL = 'kingwash';
+const _SYNC_KEYS = ['cw_cars', 'cw_customers', 'cw_expenses', 'cw_categories', 'cw_payments', 'cw_users'];
+
+async function initFirebaseSync() {
+  if (typeof firebase === 'undefined' || !window.FIREBASE_CONFIG ||
+      window.FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return;
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+    _db = firebase.firestore();
+    // Pull latest data from Firestore on startup
+    for (const key of _SYNC_KEYS) {
+      const snap = await _db.collection(_FB_COL).doc(key).get();
+      if (snap.exists()) {
+        const items = snap.data().items || [];
+        localStorage.setItem(key, JSON.stringify(items));
+      }
+    }
+    // Real-time listeners: auto-refresh when another device saves
+    _SYNC_KEYS.forEach(key => {
+      _db.collection(_FB_COL).doc(key).onSnapshot(snap => {
+        if (!snap.exists()) return;
+        const items = snap.data().items || [];
+        const newStr = JSON.stringify(items);
+        if (newStr !== localStorage.getItem(key)) {
+          localStorage.setItem(key, newStr);
+          _refreshCurrentPage();
+        }
+      });
+    });
+    console.log('[KING WASH] Firebase sync چالاک بوو');
+  } catch (err) {
+    console.warn('[KING WASH] Firebase sync هەڵە:', err.message);
+  }
+}
+
+function _pushToFirestore(key, data) {
+  if (!_db) return;
+  _db.collection(_FB_COL).doc(key)
+    .set({ items: data, updatedAt: new Date().toISOString() })
+    .catch(err => console.warn('[Firebase push]', err.message));
+}
+
+function _refreshCurrentPage() {
+  if (!_currentPage) return;
+  if (_currentPage === 'dashboard')      renderDashboard();
+  if (_currentPage === 'activeCars')     renderActiveCars();
+  if (_currentPage === 'history')        renderHistory();
+  if (_currentPage === 'customers')      renderCustomers();
+  if (_currentPage === 'expenses')       renderExpenses();
+  if (_currentPage === 'monthlyBilling') renderMonthlyBilling();
+  if (_currentPage === 'users')          renderUsers();
+}
+
 // -------- Auth --------
 const USER_PAGES  = ['newCar', 'activeCars', 'customers']; // pages user role can access
 const ADMIN_PAGES = ['dashboard', 'newCar', 'activeCars', 'customers', 'monthlyBilling', 'history', 'expenses', 'reports', 'users'];
@@ -184,6 +239,7 @@ function getAll(key) {
 
 function saveAll(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
+  _pushToFirestore(key, data);
 }
 
 function formatNum(n) {
@@ -246,6 +302,7 @@ updateClock();
 
 // -------- Page Navigation --------
 const pages = ['dashboard', 'newCar', 'activeCars', 'customers', 'monthlyBilling', 'history', 'expenses', 'reports', 'users'];
+let _currentPage = '';
 
 function showPage(name) {
   // Role check
@@ -273,6 +330,7 @@ function showPage(name) {
   if (name === 'monthlyBilling') renderMonthlyBilling();
   if (name === 'newCar')         initNewCarForm();
   if (name === 'users')          renderUsers();
+  _currentPage = name;
 }
 
 // -------- Car Size Category Buttons --------
@@ -2157,6 +2215,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // -------- Start App --------
 (function initApp() {
+  // Start Firebase sync in background (non-blocking)
+  initFirebaseSync().then(() => {
+    // After pulling latest data, re-render active page if already logged in
+    const u = getCurrentUser();
+    if (u) _refreshCurrentPage();
+  });
+
   const user = getCurrentUser();
   if (!user) {
     // show login screen
