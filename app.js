@@ -1,5 +1,4 @@
 ﻿// =====================================================
-//  KING WASH
 //  Car Wash Management System
 //  TypeScript-style JavaScript
 // =====================================================
@@ -41,6 +40,7 @@ function _setSyncStatus(status) {
   dot.style.cssText = `width:10px;height:10px;border-radius:50%;background:${s.bg};`+
     `display:inline-block;transition:background .4s;vertical-align:middle;`+
     (s.pulse ? 'animation:kw-pulse 1s infinite;' : '');
+
   dot.title = s.title;
 }
 
