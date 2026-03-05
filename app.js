@@ -947,8 +947,6 @@ function printCarReceipt(carId) {
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Courier New',monospace;width:58mm;margin:0 auto;font-size:10px;color:#000;background:#fff}
   .c{text-align:center}
-  .logo-wrap{background:#1a1a1a;border-radius:50%;width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin:4px auto}
-  .brand{font-size:13px;font-weight:bold;letter-spacing:2px;margin:2px 0 3px;font-family:'Cairo',sans-serif}
   hr{border:none;border-top:1px dashed #000;margin:4px 0}
   .row{display:flex;justify-content:space-between;padding:1px 0;font-size:10px}
   .inv-title{text-align:center;font-size:12px;font-weight:bold;text-decoration:underline;margin:3px 0}
@@ -965,17 +963,7 @@ function printCarReceipt(carId) {
 
 <!-- Logo -->
 <div class="c" style="margin-top:4px">
-  <div class="logo-wrap">
-    <svg width="44" height="44" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="30" cy="50" rx="26" ry="4" fill="rgba(255,255,255,0.1)"/>
-      <path d="M10 36 Q13 27 20 25 L23 17 Q25 13 30 13 Q35 13 37 17 L40 25 Q47 27 50 36 L50 43 Q50 45 48 45 L12 45 Q10 45 10 43Z" fill="white" stroke="#aaa" stroke-width="0.5"/>
-      <rect x="22" y="19" width="16" height="9" rx="2" fill="#87CEEB" opacity="0.6"/>
-      <circle cx="19" cy="45" r="5.5" fill="#333"/><circle cx="19" cy="45" r="3" fill="#eee"/>
-      <circle cx="41" cy="45" r="5.5" fill="#333"/><circle cx="41" cy="45" r="3" fill="#eee"/>
-      <path d="M6 36 Q8 32 12 32 L48 32 Q52 32 54 36" stroke="#ccc" stroke-width="1" fill="none"/>
-    </svg>
-  </div>
-  <div class="brand">کینگ واش</div>
+  <img src="https://jujamnm-hash.github.io/kingwash/logo-kingwash.png" style="width:140px;height:140px;display:block;margin:0 auto 4px;border-radius:14px;object-fit:cover;" />
 </div>
 
 <hr/>
@@ -1021,7 +1009,7 @@ function printCarReceipt(carId) {
   <div class="thanks">سوپاس بۆ سەردانەکەتان</div>
 </div>
 
-<script>window.onload=function(){setTimeout(function(){window.print();},300);window.onafterprint=function(){window.close()}}<\/script>
+<script>window.onload=function(){var imgs=document.images;var loaded=0;if(imgs.length===0){setTimeout(function(){window.print();},300);return;}for(var i=0;i<imgs.length;i++){imgs[i].onload=imgs[i].onerror=function(){loaded++;if(loaded===imgs.length){setTimeout(function(){window.print();},300);}};if(imgs[i].complete){loaded++;if(loaded===imgs.length){setTimeout(function(){window.print();},300);}}}};window.onafterprint=function(){window.close()}<\/script>
 </body></html>`;
 
     const win = window.open('', '_blank', 'width=300,height=700,scrollbars=yes');
