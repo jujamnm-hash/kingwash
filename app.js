@@ -24,11 +24,11 @@ const KEYS = {
 
 // -------- Firebase Sync --------
 let _db = null;
-const _FB_COL = 'kingwash';
+  const cashier    = user ? user.username : 'کینگ واش';
 const _SYNC_KEYS = ['cw_cars', 'cw_customers', 'cw_expenses', 'cw_categories', 'cw_payments', 'cw_users'];
-
+  const dateStr    = now.toLocaleDateString('ckb') + ' ' + now.toLocaleTimeString('ckb');
 function _setSyncStatus(status) {
-  const dot = document.getElementById('syncDot');
+  const payMode    = car.customerType === 'cash' ? 'نقد' : 'مانگانە';
   if (!dot) return;
   const map = {
     off:         { bg: '#6c757d', title: 'ئۆفلاین',          pulse: false },
@@ -43,13 +43,13 @@ function _setSyncStatus(status) {
 
   dot.title = s.title;
 }
-
-async function initFirebaseSync() {
-  if (typeof firebase === 'undefined' || !window.FIREBASE_CONFIG ||
-      window.FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') { _setSyncStatus('off'); return; }
-  _setSyncStatus('connecting');
-  try {
-    if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>وەسڵ - ${car.plateNumber}</title>
+<style>
     _db = firebase.firestore();
 
     // Sync strategy:
@@ -80,29 +80,29 @@ async function initFirebaseSync() {
         if (newStr !== localStorage.getItem(key)) {
           localStorage.setItem(key, newStr);
           _refreshCurrentPage();
-          showToast('داتاکان نوێ کرایەوە ☁', 'info');
-        }
-      });
-    });
-
-    _setSyncStatus('online');
-    console.log('[KING WASH] Firebase sync چالاک بوو');
-  } catch (err) {
+  <div class="row"><span>کینگ واش</span><span></span></div>
+  <div class="row"><span>بەروار:</span><span>${dateStr}</span></div>
+  <div class="row"><span>ژمارەی مامەڵە:</span><span>${txId}</span></div>
+  <div class="row"><span>ژمارەی تەرمی نەقدکردن:</span><span>044449</span></div>
+  <div class="row"><span>ناوی کارمەند:</span><span>${cashier}</span></div>
+  <div class="row"><span>شێوازی پارەدان:</span><span>${payMode}</span></div>
+  <div class="row"><span>ژمارەی سەیارە:</span><span>${car.plateNumber}</span></div>
+  <div class="row"><span>رەنگی سەیارە:</span><span>${car.color}</span></div>
     _setSyncStatus('error');
     console.warn('[KING WASH] Firebase sync هەڵە:', err.message);
   }
 }
-
+<div class="inv-title">وەسڵ</div>
 function _pushToFirestore(key, data) {
   if (!_db) return;
-  _db.collection(_FB_COL).doc(key)
-    .set({ items: data, updatedAt: new Date().toISOString() })
-    .catch(err => console.warn('[Firebase push]', err.message));
-}
-
-function _refreshCurrentPage() {
-  if (!_currentPage) return;
-  if (_currentPage === 'dashboard')      renderDashboard();
+  <tr><td></td><td style="text-align:right;font-weight:bold">PDR1</td></tr>
+  <tr><td>ناو</td><td style="text-align:right">${car.name}</td></tr>
+  <tr><td>نرخ</td><td style="text-align:right">${priceStr} د.ع</td></tr>
+  <tr><td>ژمارە</td><td style="text-align:right">1</td></tr>
+  <tr><td>کۆی گشتی</td><td style="text-align:right">${priceStr} د.ع</td></tr>
+  <tr><td colspan="2"><hr/></td></tr>
+  <tr><td>داشکاندن</td><td style="text-align:right">0.0 د.ع</td></tr>
+  <tr class="total"><td><strong>کۆی گشتی</strong></td><td style="text-align:right"><strong>${priceStr} د.ع</strong></td></tr>
   if (_currentPage === 'activeCars')     renderActiveCars();
   if (_currentPage === 'history')        renderHistory();
   if (_currentPage === 'customers')      renderCustomers();
@@ -117,7 +117,7 @@ const ADMIN_PAGES = ['dashboard', 'newCar', 'activeCars', 'customers', 'monthlyB
 
 function getUsers() {
   let users = getAll(KEYS.users);
-  // ensure default admin always exists
+  <div class="thanks">سوپاس بۆ سەردانەکەتان</div>
   if (!users.find(u => u.username === 'admin')) {
     users.push({ id: 'default_admin', username: 'admin', password: 'admin123', role: 'admin', createdAt: todayStr() });
     saveAll(KEYS.users, users);
@@ -966,7 +966,7 @@ function printCarReceipt(carId) {
 <!-- Logo -->
 <div class="c" style="margin-top:4px">
   <div class="logo-wrap">
-    <img src="https://jujamnm-hash.github.io/kingwash/logo-kingwash.png" style="width:70px;height:70px;display:block;margin:0 auto;border-radius:12px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.10);" />
+    <img src="https://jujamnm-hash.github.io/kingwash/logo-kingwash.png" style="width:110px;height:110px;display:block;margin:0 auto;border-radius:18px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.12);" />
   </div>
   <div class="brand">KING WASH</div>
 </div>
