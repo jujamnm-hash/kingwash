@@ -966,14 +966,7 @@ function printCarReceipt(carId) {
 <!-- Logo -->
 <div class="c" style="margin-top:4px">
   <div class="logo-wrap">
-    <svg width="44" height="44" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="30" cy="50" rx="26" ry="4" fill="rgba(255,255,255,0.1)"/>
-      <path d="M10 36 Q13 27 20 25 L23 17 Q25 13 30 13 Q35 13 37 17 L40 25 Q47 27 50 36 L50 43 Q50 45 48 45 L12 45 Q10 45 10 43Z" fill="white" stroke="#aaa" stroke-width="0.5"/>
-      <rect x="22" y="19" width="16" height="9" rx="2" fill="#87CEEB" opacity="0.6"/>
-      <circle cx="19" cy="45" r="5.5" fill="#333"/><circle cx="19" cy="45" r="3" fill="#eee"/>
-      <circle cx="41" cy="45" r="5.5" fill="#333"/><circle cx="41" cy="45" r="3" fill="#eee"/>
-      <path d="M6 36 Q8 32 12 32 L48 32 Q52 32 54 36" stroke="#ccc" stroke-width="1" fill="none"/>
-    </svg>
+    <img src="${location.origin}/logo-kingwash.jpeg" alt="KING WASH Logo" style="width:44px;height:44px;border-radius:8px;object-fit:contain;" />
   </div>
   <div class="brand">KING WASH</div>
 </div>
