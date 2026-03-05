@@ -53,8 +53,16 @@
 <!-- Navbar -->
 <nav class="navbar navbar-dark bg-primary sticky-top shadow">
   <div class="container-fluid">
-    <span class="navbar-brand fw-bold fs-5"><i class="bi bi-car-front-fill me-2"></i>KING WASH</span>
-    <div class="d-flex gap-2 align-items-center">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <div></div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="navbar-brand fw-bold fs-5 d-flex align-items-center" style="background:#1976f2;border-radius:12px;padding:0.5rem 1.5rem 0.5rem 1rem;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
+          <img src="logo-kingwash.png" alt="KING WASH Logo" class="logo-kingwash" style="max-width:38px;width:38px;height:38px;margin-left:10px;object-fit:contain;" />
+          <span style="font-size:1.5rem;font-weight:bold;color:#fff;">KING WASH</span>
+          <i class="bi bi-car-front-fill ms-2" style="font-size:1.7rem;color:#fff"></i>
+        </span>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
       <span class="badge bg-light text-dark" id="currentTime"></span>
       <span id="syncDot" title="Firebase sync"></span>
       <span class="badge bg-warning text-dark d-none" id="navUserBadge"><i class="bi bi-person-fill me-1"></i><span id="navUsername"></span></span>
@@ -160,7 +168,9 @@
       <div class="text-white fw-bold mt-1">KING WASH</div>
     </div>
     <button class="sidebar-btn active admin-only" onclick="showPage('dashboard')" id="sidebar-btn-dashboard">
-      <i class="bi bi-speedometer2"></i> داشبۆرد
+        <i class="bi bi-speedometer2"></i> داشبۆرد
+      </button>
+      <img src="logo.svg" alt="KING WASH Logo" class="logo-kingwash" />
     </button>
     <button class="sidebar-btn" onclick="showPage('newCar')" id="sidebar-btn-newCar">
       <i class="bi bi-plus-circle"></i> تۆماری سەیارە
@@ -283,7 +293,7 @@
               </thead>
               <tbody id="activeCarsDashBody">
                 <tr><td colspan="5" class="text-center text-muted py-3">هیچ سەیارەیەک نییە</td></tr>
-              </tbody>
+
             </table>
           </div>
         </div>

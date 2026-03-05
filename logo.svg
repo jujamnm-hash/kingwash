@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 852">
+  <rect width="100%" height="100%" fill="black"/>
+  <g>
+    <ellipse cx="384" cy="400" rx="250" ry="120" fill="#fff" stroke="#000" stroke-width="8"/>
+    <path d="M384 180 Q410 120 440 180 Q470 120 500 180 Q530 120 560 180" stroke="#00cfff" stroke-width="12" fill="none"/>
+    <rect x="200" y="300" width="368" height="160" rx="80" fill="#fff" stroke="#000" stroke-width="8"/>
+    <ellipse cx="384" cy="380" rx="160" ry="80" fill="#fff" stroke="#000" stroke-width="8"/>
+    <ellipse cx="384" cy="420" rx="120" ry="40" fill="#fff" stroke="#000" stroke-width="8"/>
+    <circle cx="384" cy="400" r="60" fill="#fff" stroke="#000" stroke-width="8"/>
+    <text x="384" y="500" font-size="60" font-family="Arial" fill="white" text-anchor="middle" font-weight="bold">KING WASH</text>
+    <text x="384" y="560" font-size="32" font-family="Arial" fill="white" text-anchor="middle">بوليشن - حمام</text>
+    <text x="384" y="610" font-size="28" font-family="Arial" fill="white" text-anchor="middle">ناونیشان: ١٠٠ مه تری ناوتیرمینال</text>
+    <text x="384" y="660" font-size="36" font-family="Arial" fill="white" text-anchor="middle">07503627700</text>
+    <g>
+      <polygon points="650,200 670,230 690,200 670,170" fill="#ffe600"/>
+      <polygon points="700,250 720,280 740,250 720,220" fill="#ffe600"/>
+      <polygon points="750,300 770,330 790,300 770,270" fill="#ffe600"/>
+      <polygon points="800,350 820,380 840,350 820,320" fill="#ffe600"/>
+      <polygon points="850,400 870,430 890,400 870,370" fill="#ffe600"/>
+    </g>
+  </g>
+</svg>
