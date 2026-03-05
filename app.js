@@ -143,11 +143,11 @@ function doLogin() {
 
   if (!username || !password) { errEl.textContent = 'ناو و وشەی نهێنی بنووسە'; errEl.classList.remove('d-none'); return; }
 
-  const users = getUsers();
+  const cashier    = user ? user.username : 'کینگ واش';
   const user  = users.find(u => u.username === username && u.password === password);
-  if (!user) { errEl.textContent = 'ناو یان وشەی نهێنی هەڵەیە'; errEl.classList.remove('d-none'); return; }
+  const dateStr    = now.toLocaleDateString('ckb') + ' ' + now.toLocaleTimeString('ckb');
 
-  sessionStorage.setItem(KEYS.session, JSON.stringify({ id: user.id, username: user.username, role: user.role }));
+  const payMode    = car.customerType === 'cash' ? 'نقد' : 'مانگانە';
   document.getElementById('loginScreen').style.display = 'none';
   applyRoleUI();
   showPage(user.role === 'admin' ? 'dashboard' : 'newCar');
@@ -162,13 +162,13 @@ function doLogout() {
 }
 
 function applyRoleUI() {
-  const user  = getCurrentUser();
-  if (!user) return;
-  const admin = user.role === 'admin';
-
-  // navbar user badge
-  document.getElementById('navUserBadge').classList.remove('d-none');
-  document.getElementById('navUsername').textContent = user.username + (admin ? ' 👑' : '');
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>وەسڵ - ${car.plateNumber}</title>
+<style>
 
   // admin-only elements
   document.querySelectorAll('.admin-only').forEach(el => {
@@ -199,29 +199,29 @@ function renderUsers() {
 
   tbody.innerHTML = users.map((u, i) => {
     const isCurrentUser = current && current.id === u.id;
-    const roleBadge = u.role === 'admin'
-      ? '<span class="badge bg-danger"><i class="bi bi-shield-fill-check me-1"></i>ئەدمین</span>'
-      : '<span class="badge bg-primary"><i class="bi bi-person-fill me-1"></i>یوزەر</span>';
-    return `<tr>
-      <td>${i + 1}</td>
-      <td class="fw-bold">${u.username} ${isCurrentUser ? '<span class="badge bg-secondary">ئەتۆ</span>' : ''}</td>
-      <td>${roleBadge}</td>
-      <td><small class="text-muted">${u.createdAt || '---'}</small></td>
+  <div class="row"><span>کینگ واش</span><span></span></div>
+  <div class="row"><span>بەروار:</span><span>${dateStr}</span></div>
+  <div class="row"><span>ژمارەی مامەڵە:</span><span>${txId}</span></div>
+  <div class="row"><span>ژمارەی تەرمی نەقدکردن:</span><span>044449</span></div>
+  <div class="row"><span>ناوی کارمەند:</span><span>${cashier}</span></div>
+  <div class="row"><span>شێوازی پارەدان:</span><span>${payMode}</span></div>
+  <div class="row"><span>ژمارەی سەیارە:</span><span>${car.plateNumber}</span></div>
+  <div class="row"><span>رەنگی سەیارە:</span><span>${car.color}</span></div>
       <td class="text-center">
         ${isCurrentUser || u.id === 'default_admin'
           ? '<span class="text-muted small">---</span>'
           : `<button class="btn btn-outline-danger btn-sm py-0 px-2" onclick="deleteUser('${u.id}')"><i class="bi bi-trash"></i></button>`}
-      </td>
+<div class="inv-title">وەسڵ</div>
     </tr>`;
   }).join('');
-}
-
-function submitAddUser(e) {
-  e.preventDefault();
-  const username = document.getElementById('newUserName').value.trim();
-  const password = document.getElementById('newUserPass').value.trim();
-  const roleEl   = document.querySelector('input[name="newUserRole"]:checked');
-  if (!roleEl) { showToast('رۆل هەڵبژێرە', 'danger'); return; }
+  <tr><td></td><td style="text-align:right;font-weight:bold">PDR1</td></tr>
+  <tr><td>ناو</td><td style="text-align:right">${car.name}</td></tr>
+  <tr><td>نرخ</td><td style="text-align:right">${priceStr} د.ع</td></tr>
+  <tr><td>ژمارە</td><td style="text-align:right">1</td></tr>
+  <tr><td>کۆی گشتی</td><td style="text-align:right">${priceStr} د.ع</td></tr>
+  <tr><td colspan="2"><hr/></td></tr>
+  <tr><td>داشکاندن</td><td style="text-align:right">0.0 د.ع</td></tr>
+  <tr class="total"><td><strong>کۆی گشتی</strong></td><td style="text-align:right"><strong>${priceStr} د.ع</strong></td></tr>
 
   const users = getUsers();
   if (users.find(u => u.username === username)) { showToast('ئەم ناوە پێشتر تۆمار کراوە', 'danger'); return; }
@@ -236,7 +236,7 @@ function submitAddUser(e) {
 
 function deleteUser(id) {
   if (!confirm('دڵنیایت لە سڕینەوەی ئەم بەکارهێنەرە؟')) return;
-  let users = getAll(KEYS.users);
+  <div class="thanks">سوپاس بۆ سەردانەکەتان</div>
   users = users.filter(u => u.id !== id);
   saveAll(KEYS.users, users);
   showToast('بەکارهێنەرەکە سڕایەوە', 'warning');
