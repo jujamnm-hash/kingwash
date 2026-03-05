@@ -1,4 +1,5 @@
 ﻿// =====================================================
+//  KING WASH
 //  Car Wash Management System
 //  TypeScript-style JavaScript
 // =====================================================
@@ -24,11 +25,11 @@ const KEYS = {
 
 // -------- Firebase Sync --------
 let _db = null;
-  const cashier    = user ? user.username : 'کینگ واش';
+const _FB_COL = 'kingwash';
 const _SYNC_KEYS = ['cw_cars', 'cw_customers', 'cw_expenses', 'cw_categories', 'cw_payments', 'cw_users'];
-  const dateStr    = now.toLocaleDateString('ckb') + ' ' + now.toLocaleTimeString('ckb');
+
 function _setSyncStatus(status) {
-  const payMode    = car.customerType === 'cash' ? 'نقد' : 'مانگانە';
+  const dot = document.getElementById('syncDot');
   if (!dot) return;
   const map = {
     off:         { bg: '#6c757d', title: 'ئۆفلاین',          pulse: false },
@@ -40,16 +41,15 @@ function _setSyncStatus(status) {
   dot.style.cssText = `width:10px;height:10px;border-radius:50%;background:${s.bg};`+
     `display:inline-block;transition:background .4s;vertical-align:middle;`+
     (s.pulse ? 'animation:kw-pulse 1s infinite;' : '');
-
   dot.title = s.title;
 }
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>وەسڵ - ${car.plateNumber}</title>
-<style>
+
+async function initFirebaseSync() {
+  if (typeof firebase === 'undefined' || !window.FIREBASE_CONFIG ||
+      window.FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') { _setSyncStatus('off'); return; }
+  _setSyncStatus('connecting');
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
     _db = firebase.firestore();
 
     // Sync strategy:
@@ -80,29 +80,29 @@ function _setSyncStatus(status) {
         if (newStr !== localStorage.getItem(key)) {
           localStorage.setItem(key, newStr);
           _refreshCurrentPage();
-  <div class="row"><span>کینگ واش</span><span></span></div>
-  <div class="row"><span>بەروار:</span><span>${dateStr}</span></div>
-  <div class="row"><span>ژمارەی مامەڵە:</span><span>${txId}</span></div>
-  <div class="row"><span>ژمارەی تەرمی نەقدکردن:</span><span>044449</span></div>
-  <div class="row"><span>ناوی کارمەند:</span><span>${cashier}</span></div>
-  <div class="row"><span>شێوازی پارەدان:</span><span>${payMode}</span></div>
-  <div class="row"><span>ژمارەی سەیارە:</span><span>${car.plateNumber}</span></div>
-  <div class="row"><span>رەنگی سەیارە:</span><span>${car.color}</span></div>
+          showToast('داتاکان نوێ کرایەوە ☁', 'info');
+        }
+      });
+    });
+
+    _setSyncStatus('online');
+    console.log('[KING WASH] Firebase sync چالاک بوو');
+  } catch (err) {
     _setSyncStatus('error');
     console.warn('[KING WASH] Firebase sync هەڵە:', err.message);
   }
 }
-<div class="inv-title">وەسڵ</div>
+
 function _pushToFirestore(key, data) {
   if (!_db) return;
-  <tr><td></td><td style="text-align:right;font-weight:bold">PDR1</td></tr>
-  <tr><td>ناو</td><td style="text-align:right">${car.name}</td></tr>
-  <tr><td>نرخ</td><td style="text-align:right">${priceStr} د.ع</td></tr>
-  <tr><td>ژمارە</td><td style="text-align:right">1</td></tr>
-  <tr><td>کۆی گشتی</td><td style="text-align:right">${priceStr} د.ع</td></tr>
-  <tr><td colspan="2"><hr/></td></tr>
-  <tr><td>داشکاندن</td><td style="text-align:right">0.0 د.ع</td></tr>
-  <tr class="total"><td><strong>کۆی گشتی</strong></td><td style="text-align:right"><strong>${priceStr} د.ع</strong></td></tr>
+  _db.collection(_FB_COL).doc(key)
+    .set({ items: data, updatedAt: new Date().toISOString() })
+    .catch(err => console.warn('[Firebase push]', err.message));
+}
+
+function _refreshCurrentPage() {
+  if (!_currentPage) return;
+  if (_currentPage === 'dashboard')      renderDashboard();
   if (_currentPage === 'activeCars')     renderActiveCars();
   if (_currentPage === 'history')        renderHistory();
   if (_currentPage === 'customers')      renderCustomers();
@@ -117,7 +117,7 @@ const ADMIN_PAGES = ['dashboard', 'newCar', 'activeCars', 'customers', 'monthlyB
 
 function getUsers() {
   let users = getAll(KEYS.users);
-  <div class="thanks">سوپاس بۆ سەردانەکەتان</div>
+  // ensure default admin always exists
   if (!users.find(u => u.username === 'admin')) {
     users.push({ id: 'default_admin', username: 'admin', password: 'admin123', role: 'admin', createdAt: todayStr() });
     saveAll(KEYS.users, users);
@@ -143,11 +143,11 @@ function doLogin() {
 
   if (!username || !password) { errEl.textContent = 'ناو و وشەی نهێنی بنووسە'; errEl.classList.remove('d-none'); return; }
 
-  const cashier    = user ? user.username : 'کینگ واش';
+  const users = getUsers();
   const user  = users.find(u => u.username === username && u.password === password);
-  const dateStr    = now.toLocaleDateString('ckb') + ' ' + now.toLocaleTimeString('ckb');
+  if (!user) { errEl.textContent = 'ناو یان وشەی نهێنی هەڵەیە'; errEl.classList.remove('d-none'); return; }
 
-  const payMode    = car.customerType === 'cash' ? 'نقد' : 'مانگانە';
+  sessionStorage.setItem(KEYS.session, JSON.stringify({ id: user.id, username: user.username, role: user.role }));
   document.getElementById('loginScreen').style.display = 'none';
   applyRoleUI();
   showPage(user.role === 'admin' ? 'dashboard' : 'newCar');
@@ -162,13 +162,13 @@ function doLogout() {
 }
 
 function applyRoleUI() {
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>وەسڵ - ${car.plateNumber}</title>
-<style>
+  const user  = getCurrentUser();
+  if (!user) return;
+  const admin = user.role === 'admin';
+
+  // navbar user badge
+  document.getElementById('navUserBadge').classList.remove('d-none');
+  document.getElementById('navUsername').textContent = user.username + (admin ? ' 👑' : '');
 
   // admin-only elements
   document.querySelectorAll('.admin-only').forEach(el => {
@@ -199,29 +199,29 @@ function renderUsers() {
 
   tbody.innerHTML = users.map((u, i) => {
     const isCurrentUser = current && current.id === u.id;
-  <div class="row"><span>کینگ واش</span><span></span></div>
-  <div class="row"><span>بەروار:</span><span>${dateStr}</span></div>
-  <div class="row"><span>ژمارەی مامەڵە:</span><span>${txId}</span></div>
-  <div class="row"><span>ژمارەی تەرمی نەقدکردن:</span><span>044449</span></div>
-  <div class="row"><span>ناوی کارمەند:</span><span>${cashier}</span></div>
-  <div class="row"><span>شێوازی پارەدان:</span><span>${payMode}</span></div>
-  <div class="row"><span>ژمارەی سەیارە:</span><span>${car.plateNumber}</span></div>
-  <div class="row"><span>رەنگی سەیارە:</span><span>${car.color}</span></div>
+    const roleBadge = u.role === 'admin'
+      ? '<span class="badge bg-danger"><i class="bi bi-shield-fill-check me-1"></i>ئەدمین</span>'
+      : '<span class="badge bg-primary"><i class="bi bi-person-fill me-1"></i>یوزەر</span>';
+    return `<tr>
+      <td>${i + 1}</td>
+      <td class="fw-bold">${u.username} ${isCurrentUser ? '<span class="badge bg-secondary">ئەتۆ</span>' : ''}</td>
+      <td>${roleBadge}</td>
+      <td><small class="text-muted">${u.createdAt || '---'}</small></td>
       <td class="text-center">
         ${isCurrentUser || u.id === 'default_admin'
           ? '<span class="text-muted small">---</span>'
           : `<button class="btn btn-outline-danger btn-sm py-0 px-2" onclick="deleteUser('${u.id}')"><i class="bi bi-trash"></i></button>`}
-<div class="inv-title">وەسڵ</div>
+      </td>
     </tr>`;
   }).join('');
-  <tr><td></td><td style="text-align:right;font-weight:bold">PDR1</td></tr>
-  <tr><td>ناو</td><td style="text-align:right">${car.name}</td></tr>
-  <tr><td>نرخ</td><td style="text-align:right">${priceStr} د.ع</td></tr>
-  <tr><td>ژمارە</td><td style="text-align:right">1</td></tr>
-  <tr><td>کۆی گشتی</td><td style="text-align:right">${priceStr} د.ع</td></tr>
-  <tr><td colspan="2"><hr/></td></tr>
-  <tr><td>داشکاندن</td><td style="text-align:right">0.0 د.ع</td></tr>
-  <tr class="total"><td><strong>کۆی گشتی</strong></td><td style="text-align:right"><strong>${priceStr} د.ع</strong></td></tr>
+}
+
+function submitAddUser(e) {
+  e.preventDefault();
+  const username = document.getElementById('newUserName').value.trim();
+  const password = document.getElementById('newUserPass').value.trim();
+  const roleEl   = document.querySelector('input[name="newUserRole"]:checked');
+  if (!roleEl) { showToast('رۆل هەڵبژێرە', 'danger'); return; }
 
   const users = getUsers();
   if (users.find(u => u.username === username)) { showToast('ئەم ناوە پێشتر تۆمار کراوە', 'danger'); return; }
@@ -236,7 +236,7 @@ function renderUsers() {
 
 function deleteUser(id) {
   if (!confirm('دڵنیایت لە سڕینەوەی ئەم بەکارهێنەرە؟')) return;
-  <div class="thanks">سوپاس بۆ سەردانەکەتان</div>
+  let users = getAll(KEYS.users);
   users = users.filter(u => u.id !== id);
   saveAll(KEYS.users, users);
   showToast('بەکارهێنەرەکە سڕایەوە', 'warning');
@@ -918,11 +918,11 @@ function printCarReceipt(carId) {
   if (!car) return;
 
   const user       = getCurrentUser();
-  const cashier    = user ? user.username : 'KingWash';
+  const cashier    = user ? user.username : 'کینگ واش';
   const now        = new Date();
-  const dateStr    = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB');
+  const dateStr    = now.toLocaleDateString('ar-IQ') + ' ' + now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' });
   const txId       = '00' + car.id.replace(/-/g, '').slice(0, 12).toUpperCase();
-  const payMode    = car.customerType === 'cash' ? 'Cash' : 'Monthly';
+  const payMode    = car.customerType === 'cash' ? 'نقد' : 'مانگانە';
   const priceStr   = formatNum(car.price);
 
   // Generate QR as dataURL using existing QRCode.js
@@ -942,13 +942,13 @@ function printCarReceipt(carId) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Receipt - ${car.plateNumber}</title>
+<title>وەسڵ - ${car.plateNumber}</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Courier New',monospace;width:58mm;margin:0 auto;font-size:10px;color:#000;background:#fff}
   .c{text-align:center}
   .logo-wrap{background:#1a1a1a;border-radius:50%;width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin:4px auto}
-  .brand{font-size:13px;font-weight:bold;letter-spacing:3px;margin:2px 0 3px}
+  .brand{font-size:13px;font-weight:bold;letter-spacing:2px;margin:2px 0 3px;font-family:'Cairo',sans-serif}
   hr{border:none;border-top:1px dashed #000;margin:4px 0}
   .row{display:flex;justify-content:space-between;padding:1px 0;font-size:10px}
   .inv-title{text-align:center;font-size:12px;font-weight:bold;text-decoration:underline;margin:3px 0}
@@ -966,37 +966,44 @@ function printCarReceipt(carId) {
 <!-- Logo -->
 <div class="c" style="margin-top:4px">
   <div class="logo-wrap">
-    <img src="https://jujamnm-hash.github.io/kingwash/logo-kingwash.png" style="width:110px;height:110px;display:block;margin:0 auto;border-radius:18px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.12);" />
+    <svg width="44" height="44" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="30" cy="50" rx="26" ry="4" fill="rgba(255,255,255,0.1)"/>
+      <path d="M10 36 Q13 27 20 25 L23 17 Q25 13 30 13 Q35 13 37 17 L40 25 Q47 27 50 36 L50 43 Q50 45 48 45 L12 45 Q10 45 10 43Z" fill="white" stroke="#aaa" stroke-width="0.5"/>
+      <rect x="22" y="19" width="16" height="9" rx="2" fill="#87CEEB" opacity="0.6"/>
+      <circle cx="19" cy="45" r="5.5" fill="#333"/><circle cx="19" cy="45" r="3" fill="#eee"/>
+      <circle cx="41" cy="45" r="5.5" fill="#333"/><circle cx="41" cy="45" r="3" fill="#eee"/>
+      <path d="M6 36 Q8 32 12 32 L48 32 Q52 32 54 36" stroke="#ccc" stroke-width="1" fill="none"/>
+    </svg>
   </div>
-  <div class="brand">KING WASH</div>
+  <div class="brand">کینگ واش</div>
 </div>
 
 <hr/>
 
 <div style="padding:0 1px">
-  <div class="row"><span>KingWash</span><span></span></div>
-  <div class="row"><span>Date:</span><span>${dateStr}</span></div>
-  <div class="row"><span>Transaction ID:</span><span>${txId}</span></div>
-  <div class="row"><span>Terminal ID:</span><span>044449</span></div>
-  <div class="row"><span>Cashier Name:</span><span>${cashier}</span></div>
-  <div class="row"><span>Payment Mode:</span><span>${payMode}</span></div>
-  <div class="row"><span>Car Number:</span><span>${car.plateNumber}</span></div>
-  <div class="row"><span>Car Color:</span><span>${car.color}</span></div>
+  <div class="row"><span>کینگ واش</span><span></span></div>
+  <div class="row"><span>بەروار:</span><span>${dateStr}</span></div>
+  <div class="row"><span>ژ. مامەڵە:</span><span>${txId}</span></div>
+  <div class="row"><span>ناسنامەی تەرمینال:</span><span>044449</span></div>
+  <div class="row"><span>ناوی کارمەند:</span><span>${cashier}</span></div>
+  <div class="row"><span>شێوازی پارەدان:</span><span>${payMode}</span></div>
+  <div class="row"><span>ژمارەی سەیارە:</span><span>${car.plateNumber}</span></div>
+  <div class="row"><span>رەنگی سەیارە:</span><span>${car.color}</span></div>
 </div>
 
 <hr/>
 
-<div class="inv-title">Invoice</div>
+<div class="inv-title">وەسڵ</div>
 
 <table style="margin:3px 0">
   <tr><td></td><td style="text-align:right;font-weight:bold">PDR1</td></tr>
-  <tr><td>Name</td><td style="text-align:right">${car.name}</td></tr>
-  <tr><td>Charges</td><td style="text-align:right">${priceStr} IQD</td></tr>
-  <tr><td>Qty</td><td style="text-align:right">1</td></tr>
-  <tr><td>Sub Total</td><td style="text-align:right">${priceStr} IQD</td></tr>
+  <tr><td>ناو</td><td style="text-align:right">${car.name}</td></tr>
+  <tr><td>نرخی شوشتن</td><td style="text-align:right">${priceStr} د.ع</td></tr>
+  <tr><td>ژمارە</td><td style="text-align:right">1</td></tr>
+  <tr><td>کۆی گشتی</td><td style="text-align:right">${priceStr} د.ع</td></tr>
   <tr><td colspan="2"><hr/></td></tr>
-  <tr><td>You Get Discount</td><td style="text-align:right">0.0 IQD</td></tr>
-  <tr class="total"><td><strong>Total</strong></td><td style="text-align:right"><strong>${priceStr} IQD</strong></td></tr>
+  <tr><td>داشکاندن</td><td style="text-align:right">0.0 د.ع</td></tr>
+  <tr class="total"><td><strong>کۆی گشتی</strong></td><td style="text-align:right"><strong>${priceStr} د.ع</strong></td></tr>
 </table>
 
 <hr/>
@@ -1011,7 +1018,7 @@ function printCarReceipt(carId) {
 
 <div class="c" style="margin:4px 0 6px">
   <div class="phone">&#128222; 07503627700</div>
-  <div class="thanks">Thank you for your visit</div>
+  <div class="thanks">سوپاس بۆ سەردانەکەتان</div>
 </div>
 
 <script>window.onload=function(){setTimeout(function(){window.print();},300);window.onafterprint=function(){window.close()}}<\/script>
