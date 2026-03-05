@@ -966,7 +966,7 @@ function printCarReceipt(carId) {
 <!-- Logo -->
 <div class="c" style="margin-top:4px">
   <div class="logo-wrap">
-    <img src="${location.origin}/logo-kingwash.jpeg" style="width:70px;height:70px;display:block;margin:0 auto;border-radius:12px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.10);" />
+    <img src="https://jujamnm-hash.github.io/kingwash/logo-kingwash.jpeg" style="width:70px;height:70px;display:block;margin:0 auto;border-radius:12px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.10);" />
   </div>
   <div class="brand">KING WASH</div>
 </div>
